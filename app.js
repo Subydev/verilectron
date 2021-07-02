@@ -16,8 +16,6 @@ function Connect() {
     client = net.createConnection(33666, "localhost");
     $('#connectButton').addClass('disabled');
     $('#disconnectButton').removeClass('disabled');
-
-
     client.on("error", function (err) {
       client_message = "Verisurf Connection Failed";
       UpdateTextarea();
@@ -53,9 +51,7 @@ function CustomCommand(cmd) {
   if (cmd.includes("inspect")) {
     cmd = `${cmd.slice(0, -2) + "id='" + param + "' />"}`;
   }
-
   switch (cmd) {
-    
     case "<import_data />":
       ImportDataFile();
       break;
@@ -105,9 +101,8 @@ function Disconnect() {
     $('#connectButton').removeClass('disabled');
   }
 }
-
 function SendCommand(command) {
-console.log(`Sent ${command}`)
+  console.log(`Sent ${command}`)
   if (client !== undefined && command !== undefined) {
     client.write(command + "\n");
     client_message = command;
@@ -180,41 +175,19 @@ function ImportCloudMesh() {
   }
 }
 
-
 function UpdateTextarea() {
-  // console.log(server_message)
-  // var respString = new TextDecoder().decode(server_message);
-  //  console.log(`Received from TextAREA Thing ${respString}`)
-
-  // if (respString.includes("data")) {
-  //   str = respString.split("<data>")[1];
-  //   str2 = str.split("</data>")[0];
-  //   var formatedXML = format(str2);
-  //   $("#results").val(formatedXML);
-
-  //   
-  // } else {
-  //   var update = "";
-
-  //   if (client_message.length)
-  //     update += "CLIENT: " + client_message + "\r\n\r\n";
-  //   if (server_message.length) update += "SERVER: " + server_message;
-  //   $("#results").val(update);
-  // }
-  
   var update = '';
-  if(client_message.length)
-      update += "CLIENT: " + client_message + "\r\n\r\n";
-  if(server_message.length)
-      update += "SERVER: " + server_message;
-  if(server_message.length && server_message.includes("data"))
+  if (client_message.length)
+    update += "CLIENT: " + client_message + "\r\n\r\n";
+  if (server_message.length)
+    update += "SERVER: " + server_message;
+  if (server_message.length && server_message.includes("data"))
 
-  client_message = '';
+    client_message = '';
   server_message = '';
 
   $("#results").val(update);
 }
-
 function SendIppCmd(e) {
   SendCommand("<device_cmm_ipp id='1' cmd='" + e + "' />");
   $("#cmmIppModal").modal("hide");
@@ -223,7 +196,6 @@ function SendIppCmd(e) {
 function handleCmdChange(e) {
   generateMdSection(e);
 }
-
 function OpenDRO() {
   const remote = require('electron').remote;
   const BrowserWindow = remote.BrowserWindow;
@@ -231,16 +203,13 @@ function OpenDRO() {
     width: 1360,
     height: 1000,
     minHeight: 800,
-    minWidth :1160,
+    minWidth: 1160,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
       enableRemoteModule: true,
       nodeIntegrationInWorker: true
-
-    
     }
-    
     // frame: false
   });
 
@@ -292,12 +261,12 @@ function showCommands() {
   for (var i = startLen; i < endLen; i++) {
     $("#command").append(
       "<option id='" +
-        i +
-        "' option value = '" +
-        VSApiFuncs[i].val +
-        "'>" +
-        VSApiFuncs[i].name +
-        "</option"
+      i +
+      "' option value = '" +
+      VSApiFuncs[i].val +
+      "'>" +
+      VSApiFuncs[i].name +
+      "</option"
     );
   }
   $("#commandContainer").show();
@@ -305,9 +274,8 @@ function showCommands() {
 
 function generateMdSection(e) {
   $("#mdContent").show();
-  document.getElementById("cmdExpTitle").innerHTML = `${
-    e.slice(1, -3) + " explained"
-  }`;
+  document.getElementById("cmdExpTitle").innerHTML = `${e.slice(1, -3) + " explained"
+    }`;
   // __dirname + '/../extraResources/'
   var filePath = `${__dirname + "/extraResources/" + e.slice(1, -3) + ".md"}`;
 

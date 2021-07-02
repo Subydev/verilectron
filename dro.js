@@ -46,7 +46,6 @@ function Connect() {
     }
 }
 
-
 function Disconnect() {
     if (client) {
         client_message = "Verisurf Connection Closed";
@@ -58,8 +57,6 @@ function Disconnect() {
 }
 
 function SendCommand(command) {
-
-    // console.log(`Sent ${command}`)
     if (client !== undefined && command !== undefined) {
         client.write(command + "\n");
         client_message = command;
@@ -81,14 +78,11 @@ function HandleRequiredResponses(rawResponse) {
     if (fromBuffer && fromBuffer.includes("data")) {
         var cmdReceived = xmlDoc.getElementsByTagName("command_received")[0].childNodes[0].nodeValue
         var data = xmlDoc.getElementsByTagName("data")[0].childNodes[0].nodeValue
-        console.log(`received: ${cmdReceived}`)
-
         switch (cmdReceived) {
 
             case "measure_get_point_mode":
                 $('#pointModeSelect').val(data)
                 break;
-
             case "device_info":
                 // Handle Build Readout
                 if (fromBuffer.includes("DY")) {
@@ -132,7 +126,6 @@ function HandleRequiredResponses(rawResponse) {
 }
 
 function UpdateTextarea() {
-
     var update = '';
     if (client_message.length)
         update += "CLIENT: " + client_message + "\r\n\r\n";
@@ -140,7 +133,6 @@ function UpdateTextarea() {
         update += "SERVER: " + server_message;
     if (server_message.length && server_message.includes("data"))
         HandleRequiredResponses(server_message)
-
     client_message = '';
     server_message = '';
 
@@ -161,6 +153,5 @@ function togglePointMode() {
         case "2":
             SendCommand("<measure_set_average />")
             break;
-
     }
 }
