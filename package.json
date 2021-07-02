@@ -1,6 +1,6 @@
 {
   "name": "Verisurf API Example",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Compilation of Verisurf API Calls",
   "main": "main.js",
   "scripts": {
@@ -42,6 +42,7 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
+            "icon": "./extraResources/icon.ico",
             "name": "verisurfapisample"
           }
         },
