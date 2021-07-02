@@ -4,9 +4,11 @@ if (handleSquirrelEvent()) {
   // squirrel event handled and app will exit in 1000ms, so don't do anything else
   return;
 }
-try {
-  require('update-electron-app')()
-} catch (_) {}
+
+require('update-electron-app')({
+  repo: 'https://github.com/Subydev/verilectron',
+})
+
 try {
   require('electron-reloader')(module)
 } catch (_) {}
@@ -14,6 +16,7 @@ function createWindow () {
     const win = new BrowserWindow({
       width: 1280,
       height: 1000,
+      icon: './extraResources/icon.ico',
       webPreferences: {
         nodeIntegration: true,
         contextIsolation: false,
