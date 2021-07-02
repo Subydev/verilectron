@@ -14,6 +14,10 @@ function Connect() {
   }
   if (connection == false) {
     client = net.createConnection(33666, "localhost");
+    $('#connectButton').addClass('disabled');
+    $('#disconnectButton').removeClass('disabled');
+
+
     client.on("error", function (err) {
       client_message = "Verisurf Connection Failed";
       UpdateTextarea();
@@ -51,13 +55,14 @@ function CustomCommand(cmd) {
   }
 
   switch (cmd) {
+    
     case "<import_data />":
       ImportDataFile();
       break;
     case "<import_cloud_mesh />":
       ImportCloudMesh();
       break;
-    case "<device_cmm_ipp />":
+    case "<device_cmm_ipp id='1' />":
       $("#cmmIppModal").modal("show");
       break;
     case "<object_info />":
@@ -96,10 +101,13 @@ function Disconnect() {
 
     client.destroy();
     client = undefined;
+    $('#disconnectButton').addClass('disabled');
+    $('#connectButton').removeClass('disabled');
   }
 }
 
 function SendCommand(command) {
+console.log(`Sent ${command}`)
   if (client !== undefined && command !== undefined) {
     client.write(command + "\n");
     client_message = command;
@@ -172,23 +180,39 @@ function ImportCloudMesh() {
   }
 }
 
-function UpdateTextarea() {
-  var respString = new TextDecoder().decode(server_message);
-  if (respString.includes("data")) {
-    str = respString.split("<data>")[1];
-    str2 = str.split("</data>")[0];
-    var formatedXML = format(str2);
-    $("#results").val(formatedXML);
-  } else {
-    var update = "";
 
-    if (client_message.length)
+function UpdateTextarea() {
+  // console.log(server_message)
+  // var respString = new TextDecoder().decode(server_message);
+  //  console.log(`Received from TextAREA Thing ${respString}`)
+
+  // if (respString.includes("data")) {
+  //   str = respString.split("<data>")[1];
+  //   str2 = str.split("</data>")[0];
+  //   var formatedXML = format(str2);
+  //   $("#results").val(formatedXML);
+
+  //   
+  // } else {
+  //   var update = "";
+
+  //   if (client_message.length)
+  //     update += "CLIENT: " + client_message + "\r\n\r\n";
+  //   if (server_message.length) update += "SERVER: " + server_message;
+  //   $("#results").val(update);
+  // }
+  
+  var update = '';
+  if(client_message.length)
       update += "CLIENT: " + client_message + "\r\n\r\n";
-    if (server_message.length) update += "SERVER: " + server_message;
-    $("#results").val(update);
-  }
-  client_message = "";
-  server_message = "";
+  if(server_message.length)
+      update += "SERVER: " + server_message;
+  if(server_message.length && server_message.includes("data"))
+
+  client_message = '';
+  server_message = '';
+
+  $("#results").val(update);
 }
 
 function SendIppCmd(e) {
@@ -196,10 +220,33 @@ function SendIppCmd(e) {
   $("#cmmIppModal").modal("hide");
 }
 
-function validateInput() {}
-
 function handleCmdChange(e) {
   generateMdSection(e);
+}
+
+function OpenDRO() {
+  const remote = require('electron').remote;
+  const BrowserWindow = remote.BrowserWindow;
+  const win = new BrowserWindow({
+    width: 1360,
+    height: 1000,
+    minHeight: 800,
+    minWidth :1160,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+      enableRemoteModule: true,
+      nodeIntegrationInWorker: true
+
+    
+    }
+    
+    // frame: false
+  });
+
+
+  win.loadURL(`file://${__dirname}/dro.html`)
+  Disconnect();
 }
 
 function showCommands() {

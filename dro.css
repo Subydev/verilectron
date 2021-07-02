@@ -5,6 +5,31 @@ body {
 
 }
 
+.droText {
+    font-size: 18vh; 
+    font-family: monospace, monospace; 
+    padding-left:1rem;
+    margin-bottom:-85px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    justify-content:flex-end;
+    cursor: default
+}
+.float {
+float:right;
+}
+.build {
+    opacity:.2
+}
+.flashRed {
+    background:red;
+}
+.navbtn {
+    padding-left: 7rem;
+    padding-top:5px; 
+    padding-bottom:5px
+}
 #sidebar-wrapper {
     z-index: 1000;
     position: fixed;
@@ -15,13 +40,6 @@ body {
     overflow-y: auto;
     background: #303030;
 }
-
-.toasts {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1;
-  }
 
 .sidebar-nav {
     position: absolute;
@@ -46,7 +64,9 @@ body {
 .sidebar-nav li a:hover {
     text-decoration: none;
     /* color: #fff; */
-    background: rgba(255, 255, 255, 0.2);
+    /* background: rgba(255, 255, 255, 0.2); */
+    background: pink;
+
 }
 .btn:focus,.btn:active {
     outline: none !important;
@@ -74,7 +94,7 @@ body {
 }
 
 #page-content-wrapper {
-    padding: 20px 5rem 20px 5rem;
+    padding: 20px 2rem 0px 5rem;
     position: relative;
  
 }

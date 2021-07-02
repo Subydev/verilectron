@@ -1,6 +1,6 @@
 {
-  "name": "verisurfapisample",
-  "version": "1.0.7",
+  "name": "Verisurf API Example",
+  "version": "1.0.8",
   "description": "Compilation of Verisurf API Calls",
   "main": "main.js",
   "scripts": {
