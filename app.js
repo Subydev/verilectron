@@ -3,11 +3,115 @@ const { dialog } = require("electron").remote;
 var showdown = require("showdown");
 var fs = require("fs");
 var format = require("xml-formatter");
+var myintro = introJs();
+const {app} = require('electron').remote
 
+// import settings from 'electron-settings';
+var settings = require("electron-settings")
 var client;
 var connection = false;
 var client_message = "";
 var server_message = "";
+
+async function hasSettings(setting) {
+  return await settings.has(setting);
+}
+
+async function getSettings(setting) {
+  return await await settings.get(setting);
+}
+
+$(".versionText").text(`Version: ${app.getVersion()}`);
+
+hasSettings('tour.completed').then(result => {
+  if(!result){
+    handleCmdChange("<measure_point />")
+    RunTutorial() 
+  }
+  if(result){
+    getSettings('tour.completed').then(result => {
+      if(!result){
+        handleCmdChange("<measure_point />")
+        RunTutorial() 
+      }
+      if(result){
+        console.log(result)
+      }
+    }).catch(error => {
+      alert(error);
+    });
+  }
+}).catch(error => {
+  alert(error); 
+});
+
+function RunTutorial() {
+  myintro.setOptions({
+    showProgress: true,
+    showBullets: false,
+    steps: [{
+      title: 'Verisurf API Tour',
+      intro: "Lets walk through a few steps to get started."
+    },
+    {
+      title: 'Connect',
+      intro: "Start by connecting to Verisurf, make sure the 'localhost' port is enabled in Verisurf SDK Preferences.",
+      element: document.querySelector('.connectButton'), 
+    },
+    {
+      title: 'Categories',
+      intro: "Select from a Category of API Calls",
+      element: document.querySelector('.categoryTour'), 
+    },
+    {
+      title: 'Command',
+      intro: "Browse for a command you would like to see an example of.",
+      element: document.querySelector('.commandTour'), 
+    },
+    {
+      title: 'ID',
+      intro: "For certain commands, you need an ID that identifies something, you can set that here.",
+      element: document.querySelector('.idTour'), 
+    },
+    {
+      title: 'Send Comand',
+      intro: "Click here to send the command to Verisurf.",
+      element: document.querySelector('.sendCommandtour'), 
+    },
+    {
+      title: 'Results View"',
+      intro: "One a command is sent, you can see the XML information Verisurf sends back. Typically this data is parsed, then used inside a programmers application.",
+      element: document.querySelector('.textAreaTour'), 
+    },
+    {
+      title: 'DRO"',
+      intro: "Use Open DRO to open an external window to run Measurement commands such as build, measure and trigger.",
+      element: document.querySelector('.droTour'), 
+      position: 'right'
+  
+    },
+    {
+      title: 'Markdown View"',
+      intro: "Whenever a Command is selected, the Markdown view is displayed for further information about the selected Command, such as parameters, requirements and response types.",
+      element: document.querySelector('.mdTour'), 
+      position: 'left'
+    },
+  
+    {
+      intro: "You're now ready to use the Verisurf API Sample App, for further questions and enhancements, please contact SDK@verisurf.com.",
+    }
+  ]
+  }).start();
+  
+}
+
+myintro.onexit(function() {
+  myintro.showHints();
+  $("#mdContent").hide();
+  settings.set('tour', {
+    completed: true,
+  });
+})
 
 function Connect() {
   if (client_message.length == undefined) {
@@ -101,6 +205,7 @@ function Disconnect() {
     $('#connectButton').removeClass('disabled');
   }
 }
+
 function SendCommand(command) {
   console.log(`Sent ${command}`)
   if (client !== undefined && command !== undefined) {
@@ -273,6 +378,7 @@ function showCommands() {
 }
 
 function generateMdSection(e) {
+  console.log(e)
   $("#mdContent").show();
   document.getElementById("cmdExpTitle").innerHTML = `${e.slice(1, -3) + " explained"
     }`;

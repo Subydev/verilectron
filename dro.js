@@ -3,6 +3,7 @@ const { dialog } = require("electron").remote;
 var showdown = require("showdown");
 var fs = require("fs");
 var format = require("xml-formatter");
+;
 
 var client;
 var connection = false;
@@ -18,6 +19,7 @@ $(function () {
         SendCommand("<device_info id='1' />")
     }, 200);
 });
+
 
 function Connect() {
     if (client_message.length == undefined) {

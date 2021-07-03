@@ -5,13 +5,12 @@ if (handleSquirrelEvent()) {
   return;
 }
 
-require('update-electron-app')({
-  repo: 'https://github.com/Subydev/verilectron',
-})
+require('update-electron-app')();
 
 try {
   require('electron-reloader')(module)
 } catch (_) { }
+
 function createWindow() {
   const win = new BrowserWindow({
     width: 1280,
@@ -21,19 +20,17 @@ function createWindow() {
       nodeIntegration: true,
       contextIsolation: false,
       enableRemoteModule: true,
-
     }
   })
-
   win.loadFile('index.html')
 }
-
 app.whenReady().then(() => {
+
   createWindow()
 })
-app.on("browser-window-created", (e, win) => {
-  win.removeMenu();
-});
+// app.on("browser-window-created", (e, win) => {
+//   win.removeMenu();
+// });
 
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit()

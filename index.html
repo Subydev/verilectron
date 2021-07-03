@@ -7,52 +7,61 @@
     <!-- <link href="node_modules/bootstrap/dist/css/bootstrap.css" rel="stylesheet" type="text/css"> -->
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link href="index.css" rel="stylesheet">
+    <!-- IntroJs styles -->
+    <link rel="stylesheet" href="node_modules/intro.js/introjs.css">
+
+    <!-- IntroJS template -->
+    <link href="node_modules/intro.js/themes/introjs-modern.css" rel="stylesheet">
 
 </head>
 
 <body>
     <div id="wrapper">
         <!-- Navigation Bar -->
-        <div id="sidebar-wrapper">
-            <ul class="sidebar-nav">
-                <div class="list-group">
-                    <a class="list-group-item active"><img style="margin-left:1rem; padding-top:5px; padding-bottom:5px"
-                            src="./extraResources/logo.png" aria-hidden="true"></i>
-                    </a>
-                    <a href="#" onclick="Connect();" id="connectButton" class="list-group-item ">
-                        <img style="padding-right: .3rem" src='./extraResources/link_white_24dp.svg'></i>
-                        Connect</a>
-                    <a href="#" onclick="Disconnect();" id="disconnectButton" class="list-group-item disabled"><img
-                            style="padding-right: .3rem" src="./extraResources//link_off_white_24dp.svg"
-                            aria-hidden="true"></i>
-                        Disconnect</a>
-                    <a href="#" onclick="FileOpen();" class="list-group-item"><img style="padding-right: .3rem"
-                            src="./extraResources/save_alt_white_24dp.svg" aria-hidden="true"></i>
-                        File Open</a>
-                    <a href="#" onclick="FileSave();" class="list-group-item"><img style="padding-right: .3rem"
-                            src="./extraResources/folder_open_white_24dp.svg" aria-hidden="true"></i>
-                        File Save</a>
-                    <a href="#" onclick="OpenDRO();" class="list-group-item"><img style="padding-right: .3rem"
-                            src="./extraResources/list_white_24dp.svg" aria-hidden="true"></i>
-                        Open DRO</a>
-            </ul>
-        </div>
-        <div id="page-content-wrapper">
+            <div id="sidebar-wrapper">
+                <ul class="sidebar-nav" >
+                    <div class="list-group" >
+                        <a class="list-group-item active"><img style="margin-left:1rem; padding-top:5px; padding-bottom:5px"
+                                src="./extraResources/logo.png" aria-hidden="true"></i>
+                        </a>
+                        <a href="#" onclick="Connect();" class="list-group-item connectButton">
+                            <img style="padding-right:.3rem; padding-top:5px; padding-bottom:5px" src='./extraResources/link_white_24dp.svg'></i>
+                            Connect</a>
+                        <a  href="#" onclick="Disconnect();" id="disconnectButton" class="list-group-item disabled disconnectHint"><img
+                                style="padding-right: .3rem; padding-top:5px; padding-bottom:5px" src="./extraResources//link_off_white_24dp.svg"
+                                aria-hidden="true"></i>
+                            Disconnect</a>
+                        <a href="#" onclick="FileOpen();" class="list-group-item openHint"><img style="padding-right: .3rem; padding-top:5px; padding-bottom:5px"
+                                src="./extraResources/save_alt_white_24dp.svg" aria-hidden="true"></i>
+                            File Open</a>
+                        <a href="#" onclick="FileSave();" class="list-group-item"><img style="padding-right: .3rem; padding-top:5px; padding-bottom:5px"
+                                src="./extraResources/folder_open_white_24dp.svg" aria-hidden="true"></i>
+                            File Save</a>
+                        <a  href="#" onclick="OpenDRO();" class="list-group-item droTour"><img style="padding-right: .3rem; padding-top:5px; padding-bottom:5px"
+                                src="./extraResources/list_white_24dp.svg" aria-hidden="true"></i>
+                            Open DRO</a>
+                        <a  href="#" onclick="RunTutorial();" class="list-group-item droTour"><img style="padding-right: .3rem; padding-top:5px; padding-bottom:5px"
+                            src="./extraResources/contact_support_white_24dp.svg" aria-hidden="true"></i>
+                        Run Tutorial</a>
+                        <p style="font-size: 12px; padding-left:6rem;cursor:default; padding-top:25px" class="list-group-item border-0 versionText"></p>
+                </ul>
+            </div>
+        <div id="page-content-wrapper" >
             <!-- Main Content -->
-            <div class="card mb-3 shadow rounded">
-                <h2 class="card-header bg-primary ">Verisurf API Sample</h2>
-                <div class="card-body ">
+            <div class="card mb-3 shadow rounded"   data-hint="You can revisit the tutorial anytime by running the Tutorial button" data-hintPosition="middle-left">
+                <h2 class="card-header bg-primary">Verisurf API Sample</h2>
+                <div class="card-body " >
                     <p class="card-text">This is a sample application for the Verisurf API written in Electron. The
                         navigation items
                         on
                         the left will issue commands to Verisurf and the area below will show the response from
                         Verisurf. You may also issue a specific command through the dropdown list below.</p>
-                    <textarea class="form-control" id="results" name="results" id=""
+                    <textarea class="form-control textAreaTour" id="results" name="results" id=""
                         style="resize: none; width:100%; height:20rem;" disabled></textarea>
                     <div class="input-group" style="align-items:center">
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-6" >
                             <label for="categorySelect" styleclass="form-label mt-4">Select Category:</label>
-                            <div class="input-group" style="align-items:center">
+                            <div class="input-group categoryTour" style="align-items:center">
                                 <select id="categorySelect" class="form-select" onchange="showCommands()"
                                     data-live-search="true">
                                     <option selected>Select Category</option>
@@ -64,24 +73,23 @@
                                     <option value="Report">Report</option>
                                     <option value="All">All</option>
                                 </select>
-
                             </div>
                         </div>
                     </div>
 
-                    <div id="commandContainer">
+                    <div id="commandContainer" >
                         <label class="form-label mt-4" for="inputCmd">Command:</label>
                         <div class="input-group">
-                            <select class="form-select" id="command" onchange="handleCmdChange(this.value)"></select>
-                            <div class="input-group-prepend">
+                            <select class="form-select commandTour" id="command" onchange="handleCmdChange(this.value)"></select>
+                            <div  class="input-group-prepend">
                                 <div style="margin-left:1rem" class="input-group-text">ID</div>
                             </div>
-                            <div>
+                            <div class ="idTour">
                                 <input type="number" value="1" class="form-control" id="paramField"
                                     style="width: 4rem; ">
                             </div>
-                            <div>
-                                <button style="margin-left:1rem" class="btn btn-primary hiddenParam"
+                            <div  >
+                                <button style="margin-left:1rem" class="btn btn-primary hiddenParam sendCommandtour"
                                     onclick="CustomCommand();">Send Command</button>
                             </div>
                         </div>
@@ -89,7 +97,7 @@
                 </div>
             </div>
             <!-- .MD Content -->
-            <div class="card mb-3 shadow rounded" style="margin-top:3.5rem; display:none" id="mdContent">
+            <div class="card mb-3 shadow rounded mdTour" style="margin-top:3.5rem; display:none" id="mdContent">
                 <h2 class="card-header bg-primary" id="cmdExpTitle"></h2>
 
                 <div class="card-body" id="mdBody">
@@ -104,7 +112,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Send CMM Message</h5>
+                <h5  class="modal-title" id="exampleModalLabel">Send CMM Message</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -131,6 +139,7 @@
     delete window.module;
 </script>
 <script src="node_modules/jquery/dist/jquery.js"></script>
+<script src="node_modules\intro.js\intro.js"></script>
 <script src='node_modules/bootstrap/dist/js/bootstrap.bundle.js'></script>
 <script>
     window['module'] = window['old_module'];

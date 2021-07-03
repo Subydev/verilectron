@@ -1,6 +1,7 @@
 {
-  "name": "Verisurf API Example",
-  "version": "1.0.11",
+  "name": "verisurfapisample",
+  "productName": "Verisurf API Example",
+  "version": "1.0.17",
   "description": "Compilation of Verisurf API Calls",
   "main": "main.js",
   "icon": "./extraResources/icon.ico",
@@ -9,6 +10,10 @@
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/subydev/verilectron"
   },
   "author": "Verisurf Software, Inc.",
   "license": "ISC",
@@ -23,7 +28,9 @@
   },
   "dependencies": {
     "bootstrap": "^5.0.1",
+    "electron-settings": "^4.0.2",
     "electron-squirrel-startup": "^1.0.0",
+    "intro.js": "^4.1.0",
     "jquery": "^3.6.0",
     "showdown": "^1.9.1",
     "update-electron-app": "^2.0.1",
