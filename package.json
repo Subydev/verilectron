@@ -1,7 +1,7 @@
 {
   "name": "verisurfapisample",
   "productName": "Verisurf API Example",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "description": "Compilation of Verisurf API Calls",
   "main": "main.js",
   "icon": "./extraResources/icon.ico",
