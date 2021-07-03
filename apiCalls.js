@@ -350,5 +350,4 @@ const VSApiFuncs = [
         name: "Inspect Object Clear",
         val: "<inspect_object_clear />"
     }
-
 ]
