@@ -20,7 +20,6 @@ async function hasSettings(setting) {
 async function getSettings(setting) {
   return await await settings.get(setting);
 }
-
 $(".versionText").text(`Version: ${app.getVersion()}`);
 
 hasSettings('tour.completed').then(result => {
