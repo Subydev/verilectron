@@ -6,7 +6,8 @@ const { get } = require("electron-settings");
 // const { O_NOFOLLOW } = require("constants");
 //! IPC requires (require.remote from electron is depreciated)
 const {
-    dialog
+    dialog,
+    shell
 } = require("@electron/remote").require("electron");
 const log = require("@electron/remote").require("electron-log");
 const pjson = require("@electron/remote").require("./package.json");
@@ -71,7 +72,6 @@ async function userSetup() {
     $("#popUpsChecked").prop({checked: 
         await settings.get('stats.ignorePopups.toggled')})
         // console.log(await settings.get('stats.ignorePopups.toggled'))
-
     if (!userSettings.tour) {
         handleCmdChange("<measure_point />");
         RunTutorial();
@@ -116,7 +116,6 @@ const bLaunchMcam = async () => {
             ]);
             let arrRes = listObject[0][1];
             let newArr = removeKey(arrRes)
-
             function removeKey(arr) {
                 arr.forEach((element, idx) => {
                     if (element.length !== 14) {
@@ -144,7 +143,8 @@ const bLaunchMcam = async () => {
                     }
                 );
                 //?Map an OnClick to send the version selected to childexec.
-                text = `<a onClick="OpenVerisurf(this)" class = "dropdown-item" href="#">${item}</a>`;
+                text = `<a onClick="OpenVerisurf(this)" id="${item}"class = "dropdown-item" href="#">${item.replace("Mastercam", "Verisurf")}</a>`;
+                console.log(item)
                 textToInsert += text;
             });
             $("#versionSelector").append(textToInsert);
@@ -271,11 +271,17 @@ function searchMd() {
 
     }
 }
+
 function searchItemSend(val){
     $("#cmdTab").removeClass("ring ring-cyan-700 animate-pulse")
-    // handleCmdChange(val)
     generateMdSection(val);
 
+}
+
+function showLog(){
+    let path = log.transports.file.findLogPath()
+
+    shell.openPath(path)
 }
 
 function Connect() {
@@ -290,7 +296,7 @@ function Connect() {
         client.on("connect", function () {
             client_message = "Verisurf Connection Opened";
             connection = true;
-            $( "#apiStatusAnimin, #apiStatusAnimout" )
+            $( "#apiStatusAnimin, #apiStatusAnimout, #verisurfStatusAnimin, #verisurfStatusAnimout" )
             .removeClass( "bg-red-500  bg-red-500" )
                 .addClass( "bg-green-500 bg-green-500" );
                 $("#connectButton").addClass("opacity-30");
@@ -503,7 +509,7 @@ function OpenDRO() {
 }
 
 async function OpenVerisurf(e) {
-    let reqVer = `versions.${e.innerHTML}`;
+    let reqVer = `versions.${e.id}`;
     const mcamPath = getSettings(`${reqVer}.directory`)
         .then((result) => {
             return result;
@@ -530,6 +536,7 @@ async function OpenVerisurf(e) {
                     $("#errorAlert").slideUp(500);
                 });
                 log.error(err)
+                log.info(data)
                 return;
             }
         });

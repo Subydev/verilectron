@@ -1,7 +1,7 @@
 {
     "name": "verisurfapisample",
     "productName": "Verisurf API Example",
-    "version": "1.0.27",
+    "version": "1.0.28",
     "homepage": "https://github.com/subydev/verilectron",
     "description": "Compilation of Verisurf API Calls",
     "main": "main.js",
