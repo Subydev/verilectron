@@ -1,76 +1,87 @@
 {
-  "name": "verisurfapisample",
-  "productName": "Verisurf API Example",
-  "version": "1.0.23",
-  "homepage": "https://github.com/subydev/verilectron",
-  "description": "Compilation of Verisurf API Calls",
-  "main": "main.js",
-  "icon": "./extraResources/icon.ico",
-  "scripts": {
-    "test": "test",
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/subydev/verilectron"
-  },
-  "author": "Verisurf Software, Inc.",
-  "license": "ISC",
-  "devDependencies": {
-    "@electron-forge/cli": "^6.0.0-beta.57",
-    "@electron-forge/maker-deb": "^6.0.0-beta.57",
-    "@electron-forge/maker-rpm": "^6.0.0-beta.57",
-    "@electron-forge/maker-squirrel": "^6.0.0-beta.57",
-    "@electron-forge/maker-zip": "^6.0.0-beta.57",
-    "electron": "^13.1.2",
-    "electron-reloader": "^1.2.1"
-  },
-  "dependencies": {
-    "bootstrap": "^5.0.1",
-    "electron-settings": "^4.0.2",
-    "electron-squirrel-startup": "^1.0.0",
-    "intro.js": "^4.1.0",
-    "jquery": "^3.6.0",
-    "showdown": "^1.9.1",
-    "update-electron-app": "^2.0.1",
-    "xml-formatter": "^2.4.0"
-  },
-  "build": {
-    "extraResources": [
-      "./extraResources/**"
-    ]
-  },
-  "config": {
-    "forge": {
-      "packagerConfig": {
-        "icon": "./extraResources/icon.ico"
-      },
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "setupIcon": "./extraResources/icon.ico",
-            "icon": "./extraResources/icon.ico",
-            "name": "verisurfapisample"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
+    "name": "verisurfapisample",
+    "productName": "Verisurf API Example",
+    "version": "1.0.24",
+    "homepage": "https://github.com/subydev/verilectron",
+    "description": "Compilation of Verisurf API Calls",
+    "main": "main.js",
+    "icon": "./extraResources/icon.ico",
+    "scripts": {
+        "test": "test",
+        "start": "electron-forge start",
+        "package": "electron-forge package",
+        "make": "electron-forge make"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/subydev/verilectron"
+    },
+    "author": "Verisurf Software, Inc.",
+    "license": "ISC",
+    "devDependencies": {
+        "@electron-forge/cli": "^6.0.0-beta.57",
+        "@electron-forge/maker-deb": "^6.0.0-beta.57",
+        "@electron-forge/maker-rpm": "^6.0.0-beta.57",
+        "@electron-forge/maker-squirrel": "^6.0.0-beta.57",
+        "@electron-forge/maker-zip": "^6.0.0-beta.57",
+        "autoprefixer": "^10.2.6",
+        "electron": "^13.1.2",
+        "electron-reloader": "^1.2.1",
+        "postcss": "^8.3.5",
+        "tailwindcss": "^2.2.4"
+    },
+    "dependencies": {
+        "@electron/remote": "^1.2.0",
+        "alpinejs": "^3.2.1",
+        "bootstrap": "^5.0.1",
+        "chart.js": "^3.4.1",
+        "daisyui": "^1.6.1",
+        "dateformat": "^4.5.1",
+        "electron-log": "^4.3.5",
+        "electron-settings": "^4.0.2",
+        "electron-squirrel-startup": "^1.0.0",
+        "intro.js": "^4.1.0",
+        "jquery": "^3.6.0",
+        "ps-list": "^7.2.0",
+        "regedit": "^4.0.0",
+        "showdown": "^1.9.1",
+        "update-electron-app": "^2.0.1",
+        "xml-formatter": "^2.4.0"
+    },
+    "build": {
+        "extraResources": [
+            "./extraResources/**"
+        ]
+    },
+    "config": {
+        "forge": {
+            "packagerConfig": {
+                "icon": "./extraResources/icon.ico"
+            },
+            "makers": [
+                {
+                    "name": "@electron-forge/maker-squirrel",
+                    "config": {
+                        "setupIcon": "./extraResources/icon.ico",
+                        "icon": "./extraResources/icon.ico",
+                        "name": "verisurfapisample"
+                    }
+                },
+                {
+                    "name": "@electron-forge/maker-zip",
+                    "platforms": [
+                        "darwin"
+                    ]
+                },
+                {
+                    "name": "@electron-forge/maker-deb",
+                    "config": {}
+                },
+                {
+                    "name": "@electron-forge/maker-rpm",
+                    "config": {}
+                }
+            ]
         }
-      ]
     }
-  }
 }

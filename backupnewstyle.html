@@ -1,0 +1,183 @@
+<div id="wrapper" class=" grid grid-cols-1 ">
+    <!--? Header Bar -->
+    <header class="h-24 top-0 z-[5] justify-between items-center flex-shrink-0 h-full
+       bg-gradient-to-l from-bluegray-700 via-bluegray-800 to-gray-800
+       border-b border-gray-600">
+       <a class=""><img class=" " src="./extraResources/logo.png"
+          aria-hidden="true"></i>
+       </a>
+    </header>
+    <div class=" bg-teal-900 inset-y-0 z-10 flex flex-row  ">
+ <!-- <div class="fixed flex flex-col top-14 left-0 w-14 hover:w-64 md:w-64 bg-blue-900 dark:bg-gray-900 h-full text-white transition-all duration-300 border-none z-10 sidebar"> -->
+
+       <!--? Nav Area -->
+       <nav class=" overflow-y-auto flex flex-col flex-shrink-0 w-72 h-full border-r bg-gray-600">
+           <p class="list-group-item border-0 text-2xl">Connection Status<span></span></p>
+
+            <!--? Stats Section  -->
+           <div id="verisurfStatus" class="list-group-item border-0 flex flex-row items-center gap-3">
+              <span id="verisurfStatusAnimin" class="animate-ping absolute ease-in-out bg-red-500 inline-flex h-3 w-3 rounded-full opacity-80"></span>
+              <span id="verisurfStatusAnimout" class="relative inline-flex rounded-full bg-red-500 opacity-60 h-3 w-3"></span>
+              Verisurf Status
+           </div>
+           <div id="apiStatus"  class="list-group-item border-0 flex flex-row items-center gap-3">
+              <span id="apiStatusAnimin" class="animate-ping absolute ease-in-out bg-red-500 inline-flex h-3 w-3 rounded-full opacity-80"></span>
+              <span id="apiStatusAnimout" class="relative inline-flex rounded-full bg-red-500 opacity-60 h-3 w-3"></span>
+              API Status
+           </div>
+
+           <!--? Command Section  -->
+           <div class="grid grid-cols-1 gap-2">
+               <div class="list-group-item border-0 text-2xl">API Commands<span></span></div>
+               <a href="#" onclick="Connect();" class="flex flex-row list-group-item list-group-item-action connectButton"
+                   id="connectButton">
+                   <img class="linkImgStyles" src='./extraResources/connect.svg' />
+                   Connect</a>
+               <a href="#" onclick="Disconnect();" id="disconnectButton"
+                   class="list-group-item list-group-item-action inline-flex disabled disconnectHint"><img
+                       class="" src="./extraResources/disconnect.svg" aria-hidden="true" />
+                   Disconnect</a>
+               <a href="#" onclick="FileOpen();"
+                   class="list-group-item list-group-item-action flex flex-row  openHint"><img class="linkImgStyles"
+                       src="./extraResources/save.svg" aria-hidden="true" />
+                   File Open</a>
+               <a href="#" onclick="FileSave();" class="list-group-item list-group-item-action flex flex-row "><img
+                       class="linkImgStyles" src="./extraResources/open.svg" aria-hidden="true" />
+                   File Save</a>
+               <a href="#" onclick="OpenDRO();" class="list-group-item droTour list-group-item-action flex flex-row "><img
+                       class="linkImgStyles" src="./extraResources/opendro.svg" aria-hidden="true" />
+                   Open DRO</a>
+               <a href="#" onclick="RunTutorial();"
+                   class="list-group-item droTour list-group-item-action flex flex-row "><img class="linkImgStyles"
+                       src="./extraResources/tutorial.svg" aria-hidden="true" />
+                   Run Tutorial</a>
+           </div>
+           <div class="mt-auto">
+               <p class="list-group-item border-0 versionText versionStyle" id="versionText"></p>
+           </div>
+        </nav>
+
+       <!--? Commands Sections -->
+       <div class="flex flex-col flex-1 bg-green-800 m-12 p-4 rounded-xl shadow-2xl"
+          data-hint="You can revisit the tutorial anytime by running the Tutorial button" data-hintPosition="middle-left">
+          <!--* M Sections -->
+          <span class="text-3xl text-color-white subpixel-antialiased">Commands</span>
+          <div class="flex flex-col space-y-4">
+             <p class="">This is a sample application for the Verisurf API written in Electron. The
+                navigation items on the left will issue commands to Verisurf and the area below will show
+                the response from Verisurf. You may also issue a specific command
+                through the dropdown list below.
+             </p>
+             <!-- <textarea class="form-control textAreaStyle textAreaTour" id="results" name="results" disabled></textarea> -->
+             <div class="">
+                <textarea class="textarea h-80 w-full rounded-md " ></textarea>
+             </div>
+             <div class="">
+                <div class="col-md-6">
+                   <label class="categoryStyle" for="categorySelect" styleclass="">Select
+                   Category:</label>
+                   <div class=" ">
+                      <select id="categorySelect" class="form-select" onchange="showCommands()"
+                         data-live-search="true">
+                         <option selected>Select Category</option>
+                         <option value="CAD">CAD</option>
+                         <option value="General">General</option>
+                         <option value="Verisurf Database">Verisurf Database</option>
+                         <option value="Device">Device</option>
+                         <option value="Measure">Measure</option>
+                         <option value="Report">Report</option>
+                         <option value="All">All</option>
+                      </select>
+                   </div>
+                </div>
+             </div>
+             <div id="commandContainer" class=" grid grid-cols-1 space-y-0 items-center lg:space-y-0  lg:grid-cols-7 xl:gap-x-5">
+                <label class=" col-span-full" for="inputCmd">Command:</label>
+                <div class=" col-span-4">
+                   <select class="form-select commandTour" id="command" onchange="handleCmdChange(this.value)"></select>
+                </div>
+                <div class="input-group-prepend flex flex-row">
+                   <div class="input-group-text btnMargins ">ID</div>
+                   <input type="number" value="1" class="form-control  " id="paramField">
+                </div>
+                <div class="grid lg:col-span-2 ">
+                   <a href="#"  onclick="CustomCommand()" data-theme="vstheme"class="btn btn-primary rounded-md border-gray-700 flex">
+                   <i class=""></i>
+                   <span style="font-size:15px; text-transform: none;">Send Command</span>
+                   </a>
+                </div>
+             </div>
+          </div>
+          <div class="card mb-3 hidden shadow rounded mdTour" id="mdContent">
+             <h2 class="card-header bg-primary" id="cmdExpTitle"></h2>
+             <div class="card-body" id="mdBody">
+             </div>
+          </div>
+       </div>
+    </div>
+ </div>
+ <!-- ?CMM PlaceHolder Modal-->
+ <div class="modal fade" id="cmmIppModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+       <div class="modal-content">
+          <div class="modal-header">
+             <h5 class="modal-title">Send CMM Message</h5>
+          </div>
+          <div class="modal-body">
+             <form>
+                <div class="form-group">
+                   <label for="message-text" class="col-form-label">Message:</label>
+                   <textarea class="form-control" placeholder="ClearAllErrors()"
+                      id="cmmIppUserCmd"></textarea>
+                </div>
+             </form>
+          </div>
+          <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" id="cmmIppModal"
+                onClick="CloseThis(this)">Close</button>
+             <button type="button" onclick="SendIppCmd(document.getElementById('cmmIppUserCmd').value)"
+                class="btn btn-primary">Send Command</button>
+          </div>
+       </div>
+    </div>
+ </div>
+ <!-- ?Alert PlaceHolder-->
+ <div id="errorAlert" aria-hidden="true" class="alert alert-danger alert-dismissible"
+    style="z-index:99999; border-radius:10px;width:50%;position:absolute; display:none;transform:translate(50%, -31rem);">
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <h4 class="alert-heading">Error</h4>
+    <p class="mb-0">Unable to open the Verisurf version selected, more information may be available in the log
+       file. You can try to connect again, or close this. 
+    </p>
+ </div>
+ <!-- ?Start Verisurf Modal-->
+ <div class="modal fade" id="runMastercamModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+       <div class="modal-content">
+          <div class="modal-header">
+             <h5 class="modal-title">Verisurf Not Running</h5>
+          </div>
+          <div class="modal-body">
+             <form>
+                <div class="form-group">
+                   <label for="message-text" class="col-form-label">Verisurf doesn't seem to be running,
+                   would you like to open it?</label>
+                </div>
+             </form>
+          </div>
+          <div class="modal-footer">
+             <button type="button" onClick="CloseThis(runMastercamModal)"
+                class="btn btn-secondary">Close</button>
+             <div class="dropdown show">
+                <button id="versionSelectorBtn" type="button" class="btn btn-primary dropdown-toggle"
+                   data-bs-toggle="dropdown">Launch Verisurf</button>
+                <div id="versionSelector" class="dropdown-menu" aria-labelledby="versionSelectorBtn">
+                   <!-- *Version Selector Maps Here -->
+                </div>
+             </div>
+          </div>
+       </div>
+    </div>
+ </div>

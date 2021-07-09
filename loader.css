@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .loader {
+        border-top-color: #3498db;
+        -webkit-animation: spinner 1.5s ;
+        animation: spinner 1.5s linear infinite;
+    }
+}
+
