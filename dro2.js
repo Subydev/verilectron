@@ -169,7 +169,7 @@ function HandleRequiredResponses(rawResponse) {
                         $("#xText").text("DX");
                         $("#yText").text("DY");
                         $("#zText").text("DZ");
-                        $("#zText").text("3D");
+                        $("#dText").text("3D");
                         $("#dText").removeClass("build");
                     }
                     let fixedx = parseFloat(xValue).toFixed(4)

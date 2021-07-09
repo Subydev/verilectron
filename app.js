@@ -239,11 +239,20 @@ function RunTutorial() {
         })
         .start()
 }   
+function sClosed(){
+    $("#cmdTab").removeClass("ring ring-cyan-700 animate-pulse")
+    $('.searchlistresults').empty();
+    // $('.searchBar').val();
+    document.getElementById("searchBar").value = ``;
+    
 
+
+}
 function searchMd() {
     let input = document.getElementById('searchBar').value
     input=input.toLowerCase();
     let x = VSApiFuncs
+
     for (i = 0; i < x.length; i++) {
 
         if (!x[i].name.toLowerCase().includes(input)) {
@@ -252,11 +261,21 @@ function searchMd() {
         else { 
             $('.searchlistresults').find(`#${x.indexOf(x[i])}`).remove();
 
-            text = `<a onClick="handleCmdChange('${x[i].val}')" class="dropdown-item " id="${x.indexOf(x[i])}" href="#">${x[i].name}</a>`;
+            text = `<a onClick="searchItemSend('${x[i].val}')" class="dropdown-item " id="${x.indexOf(x[i])}" href="#">${x[i].name}</a>`;
             $(".searchlistresults").append(text);
         }
 
     }
+    if(input.length == 0 || input == undefined){
+        $('.searchlistresults').empty();
+
+    }
+}
+function searchItemSend(val){
+    $("#cmdTab").removeClass("ring ring-cyan-700 animate-pulse")
+    // handleCmdChange(val)
+    generateMdSection(val);
+
 }
 
 function Connect() {
@@ -348,7 +367,7 @@ function CustomCommand(cmd) {
 function Disconnect() {
     if (client) {
         client_message = "Verisurf Connection Closed";
-        $("#cmdTab").removeClass("animate-pulse")
+        $("#cmdTab").removeClass("ring ring-cyan-700 animate-pulse")
 
         UpdateTextarea();
 
@@ -448,7 +467,7 @@ function SendIppCmd(e) {
 }
 
 function handleCmdChange(e) {
-    $("#cmdTab").addClass("animate-pulse")
+    $("#cmdTab").addClass("ring ring-cyan-700 animate-pulse")
     let popup = settings.getSync('stats.ignorePopups.toggled')
     // $("#cmdTab").trigger()
 
@@ -456,7 +475,9 @@ function handleCmdChange(e) {
             isSettingsPanelOpen = true
         // $("#cmdTab").trigger()
     }
+
     generateMdSection(e);
+
 }
 
 function OpenDRO() {
@@ -572,7 +593,6 @@ function showCommands() {
 }
 
 function generateMdSection(e) {
-    
     $("#mdContent").show();
     document.getElementById("cmdExpTitle").innerHTML = `${e.slice(1, -3)
         }`;
@@ -592,6 +612,8 @@ function generateMdSection(e) {
         (text = data), (html = converter.makeHtml(text));
         document.getElementById("mdBody").innerHTML = `${html}`;
     });
+
+
 }
 
 async function wasResized() {
