@@ -157,7 +157,7 @@
                     </nav>
                     <!-- Main Side Bar Panel -->
                     <nav aria-label="Main"
-                        class="bg-bluegray-800 overflow-y-auto flex flex-col flex-shrink-0 w-64 h-full transition-transform transform border-r border-gray-600">
+                        class="bg-bluegray-800 overflow-y-auto overscroll-contain  flex flex-col flex-shrink-0 w-64 h-full transition-transform transform border-r border-gray-600">
 
                         <!-- VS Corp Logo -->
                         <div class="flex items-center justify-center p-3 flex-shrink-0 -4">
@@ -168,51 +168,51 @@
 
                         <!--? MenuBar -->
                         <div
-                            class="w-auto flex flex-1 flex-col items-center bg-bluegray-800  space-y-5 border shadow-2xl border-gray-900 rounded-md my-2 mx-1">
+                            class="w-auto flex flex-1  flex-col items-center bg-bluegray-800  space-y-2 border shadow-2xl border-gray-900 rounded-md my-2 mx-1">
                             <div data-theme="vstheme" class="collapse w-full  bg-bluegray-900 bg-opacity-40 collapse-arrow ">
-                                <input type="checkbox">
+                                <input type="checkbox" onclick="SendCommand('<object_list />');">
                                 <div class="collapse-title text-lg font-normal filter ">
                                     Points
                                 </div>
-                                <div id="pointsTree" class="collapse-content flex -mx-3 flex-col bg-bluegray-800">
+                                <div id="pointsTree" class="objList collapse-content h-48 overflow-y-auto flex -mx-3 flex-col bg-bluegray-800">
                                     <!-- !Point Tree Content -->
                                 </div>
                             </div>
 
                             <div data-theme="vstheme" class="collapse w-full  bg-bluegray-900 bg-opacity-40 collapse-arrow ">
-                                <input type="checkbox">
+                                <input type="checkbox" onclick="SendCommand('<object_list />');">
                                 <div class="collapse-title text-lg font-normal filter ">
                                     Alignments
                                 </div>
-                                <div id="alignmentsTree" class="collapse-content flex -mx-3 flex-col bg-bluegray-800">
+                                <div id="alignmentsTree" class="objList collapse-content h-48 overflow-y-auto flex -mx-3 flex-col bg-bluegray-800">
                                     <!-- !Alignment Tree Content -->
                                 </div>
                             </div>
                             <div data-theme="vstheme" class="collapse w-full  bg-bluegray-900 bg-opacity-40 collapse-arrow ">
-                                <input type="checkbox">
+                                <input type="checkbox" onclick="SendCommand('<object_list />');">
                                 <div class="collapse-title text-lg font-normal filter ">
                                     Features
                                 </div>
-                                <div id="featuresTree" class="collapse-content flex -mx-3 flex-col bg-bluegray-800">
+                                <div id="featuresTree" class="objList collapse-content h-48 overflow-y-auto flex flex -mx-3 flex-col bg-bluegray-800">
                                     <!-- !Feature Tree Content -->
                                 </div>
                             </div>
                             <div data-theme="vstheme" class="collapse w-full  bg-bluegray-900 bg-opacity-40 collapse-arrow ">
-                                <input type="checkbox">
+                                <input type="checkbox" onclick="SendCommand('<object_list />');">
                                 <div class="collapse-title text-lg font-normal  filter ">
                                     Analysis
                                 </div>
-                                <div id="analysisTree" class="collapse-content flex -mx-3 flex-col bg-bluegray-800">
+                                <div id="analysisTree" class="objList collapse-content h-48 overflow-y-auto flex flex -mx-3 flex-col bg-bluegray-800">
                         
                                     <!-- !Analysis Content -->
                                 </div>
                             </div>
                             <div data-theme="vstheme" class="collapse w-full  bg-bluegray-900 bg-opacity-40 collapse-arrow ">
-                                <input type="checkbox">
-                                <div class="collapse-title text-lg font-normal  filter ">
+                                <input type="checkbox" onclick="SendCommand('<object_list />');">
+                                <div class="collapse-title text-lg font-normal   filter ">
                                     Reports
                                 </div>
-                                <div id="reportsTree" class="collapse-content flex -mx-3 flex-col bg-bluegray-800">
+                                <div id="reportsTree" class="objList collapse-content flex h-48 overflow-y-auto flex -mx-3 flex-col bg-bluegray-800">
                         
                                     <!-- !Reports Tree Content -->
                                     
@@ -223,7 +223,7 @@
                                 <div class="collapse-title text-lg font-normal filter ">
                                     Targets
                                 </div>
-                                <div id="targetsTree" class="collapse-content flex -mx-3 flex-col bg-bluegray-800">
+                                <div id="targetsTree" class="objList collapse-content flex -mx-3 h-48 overflow-y-auto flex flex-col bg-bluegray-800">
                                     <!-- !Target Tree Content -->
                                 </div>
                             </div>

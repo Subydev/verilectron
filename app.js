@@ -3,6 +3,7 @@ const myintro = introJs();
 const psList = require("ps-list");
 var dateFormat = require("dateformat");
 const { get } = require("electron-settings");
+const { addAbortSignal } = require("stream");
 // const { O_NOFOLLOW } = require("constants");
 //! IPC requires (require.remote from electron is depreciated)
 const {
@@ -278,13 +279,28 @@ function searchItemSend(val){
 
 }
 
+
 function showLog(){
     let path = log.transports.file.findLogPath()
 
     shell.openPath(path)
 }
 
+function calculateTimeBetween(start, end) {     
+    let diff = end - start;
+    let hours = Math.floor(diff / 36e5);
+    let minutes = Math.floor((diff % 36e5) / 6e4);
+    let seconds = Math.floor(((diff % 36e5) % 6e4) / 1e3);
+    let milliseconds = (((diff % 36e5) % 6e4) % 1e3);
+    return {
+        hours: hours,
+        minutes: minutes,
+        seconds: seconds,
+        milliseconds: milliseconds
+    };
+}
 function Connect() {
+
     if (client_message.length == undefined) {}
     if (connection == false) {
         client = net.createConnection(33666, "localhost");
@@ -487,6 +503,21 @@ function handleCmdChange(e) {
 }
 
 function OpenDRO() {
+/**
+ * ?Definition for OpenDRO
+ * function OpenDro(val, next) {
+ *     BrowserWindow = require("@electron/remote");
+ *     win = new BrowserWindow({})
+ * }
+ * *When opening this window we are creating a new TCP Stocket instance, since maintining the original state isn't
+ * *100% required, it would be best practice to @Disconnect here.
+ */
+/**
+ * @param {client} l1
+ * @param {server-message} l2
+ * @return {client_message}
+ */
+
     const {
         BrowserWindow
     } = require("@electron/remote");
@@ -504,7 +535,17 @@ function OpenDRO() {
     });
 
     win.loadURL(`file://${__dirname}/dro2.html`);
-    Disconnect();
+    win.webContents.openDevTools()
+    win.onbeforeunload = (e) => {
+        Disconnect()
+      
+        // Unlike usual browsers that a message box will be prompted to users, returning
+        // a non-void value will silently cancel the close.
+        // It is recommended to use the dialog API to let the user confirm closing the
+        // application.
+        e.returnValue = false // equivalent to `return false` but not recommended
+      }
+    // Disconnect();
 
 }
 

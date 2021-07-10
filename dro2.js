@@ -106,17 +106,29 @@ function HandleRequiredResponses(rawResponse) {
             <path d="M20,6h-8l-2-2H4C2.9,4,2.01,4.9,2.01,6L2,18c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V8C22,6.9,21.1,6,20,6z M20,18L4,18V6h5.17 l2,2H20V18z M18,12H6v-2h12V12z M14,16H6v-2h8V16z"/></g>
         </svg>
         `
+        const deleteSvg = `
+        <svg xmlns="http://www.w3.org/2000/svg" height="17px" viewBox="0 0 24 24" width="24px" fill="#a9a9a9">
+            <path d="M0 0h24v24H0V0z" fill="none"/>
+            <path d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z"/>
+        </svg>
+        `
 
         const featureSvg = `
         <img src="./extraResources/${type}32.png"
             class="transform mx-auto mb-1 scale-75 w-auto h-7 filter brightness-125" />
         `
-        listData = "<div onclick=\"SendCommand(`<object_selection_set ids='" + id + "' />`)\" class='flex flex-row bg-gray-800 items-center cursor-pointer hover:bg-gray-400 hover:bg-opacity-50 rounded-sm'>" +
-        "<div class='flex items-center h-8 space-x-2'>" +
-            `${svg()}` +
-          "<span class=\"text-sm\">"+name+"</span>" +
-          "</div>" +
-          "</div>";
+        listData = `<div class="flex flex-row" id="row${id}">` +
+                        "<div onclick=\"SendCommand(`<object_selection_set ids='" + id + "' />`)\" class='flex flex-row flex w-full bg-gray-800 items-center cursor-pointer hover:bg-gray-400 hover:bg-opacity-50 rounded-sm'>" +
+                                "<div class='flex items-center h-8 space-x-2'>" +
+                                    `${svg()}` +
+                                    "<span class=\"text-sm\">"+name+"</span>" +
+                                "</div>" +
+                        "</div>" +
+                        "<div class='flex bg-gray-800 items-center cursor-pointer hover:bg-red-400 hover:bg-opacity-50 rounded-sm' onclick=\"deleteVsObject("+id+")\" `>" +
+                            `${deleteSvg}` +
+                        "</div>" +
+                    "</div>" ;
+
         return listData
     }
     
@@ -126,8 +138,12 @@ function HandleRequiredResponses(rawResponse) {
         switch (cmdReceived) {
             case "object_list":
                 var respArr = xmlDoc.getElementsByTagName("object")
-                for(let i = 0; i < respArr.length; i++){
-                    if(respArr[i]["attributes"]["type"].nodeValue){
+                //* Remove list data in case of events
+
+                $(".objList").empty();
+
+                for (let i = 0; i < respArr.length; i++) {
+                    if (respArr[i]["attributes"]["type"].nodeValue) {
                         let type = respArr[i]["attributes"]["type"].nodeValue.toLowerCase()
                         let featName = respArr[i].childNodes[0].nodeValue
                         let id = respArr[i]["attributes"]["id"].nodeValue
@@ -146,19 +162,21 @@ function HandleRequiredResponses(rawResponse) {
                         if (type === "target") {
                             $("#targetsTree").append(addListData(id, featName, type));
                         }
-                        else if((["circle","plane","line","spline","ellipse","slot","sphere","cone","cylinder","paraboloid"].indexOf(type) > -1)){
+                        else if ((["circle", "plane", "line", "spline", "ellipse", "slot", "sphere", "cone", "cylinder", "paraboloid"].indexOf(type) > -1)) {
                             $("#featuresTree").append(addListData(id, featName, type));
                         }
                     }
                 }
                 break;
-
+            case "object_delete":
+                SendCommand("<object_list />")
+                break;
             case "measure_get_point_mode":
                 $('#pointModeSelect').val(data)
                 break;
 
             case "device_info":
-                if(data === xmlDoc.getElementsByTagName("device_info")[0]){return}
+                if (data === xmlDoc.getElementsByTagName("device_info")[0]) { return }
                 if (fromBuffer.includes("DY")) {
                     xValue = xmlDoc.getElementsByTagName("device_info")[0]["attributes"]["DX"].nodeValue
                     yValue = xmlDoc.getElementsByTagName("device_info")[0]["attributes"]["DY"].nodeValue
@@ -176,80 +194,80 @@ function HandleRequiredResponses(rawResponse) {
                     let fixedy = parseFloat(yValue).toFixed(4)
                     let fixedz = parseFloat(zValue).toFixed(4)
                     let fixedd = parseFloat(dValue).toFixed(4)
-                    if(fixedd){
-                        if(fixedd > 0.02){
+                    if (fixedd) {
+                        if (fixedd > 0.02) {
                             $("#dTextVal").addClass("text-blue-800");
                             $("#dTextVal").removeClass("text-green-800");
                             $("#dTextVal").removeClass("text-red-800");
 
                         }
-                        if(fixedd < -0.02){
+                        if (fixedd < -0.02) {
                             $("#dTextVal").addClass("text-red-800");
                             $("#dTextVal").removeClass("text-blue-800");
                             $("#dTextVal").removeClass("text-green-800");
                         }
-                     if(fixedd < 0.02 && fixedd > -0.02 ){
+                        if (fixedd < 0.02 && fixedd > -0.02) {
                             $("#dTextVal").addClass("text-green-800");
                             $("#dTextVal").removeClass("text-blue-800");
                             $("#dTextVal").removeClass("text-red-800");
-                     }
+                        }
                     }
 
-                    if(fixedx){
-                        if(fixedx > 0.02){
+                    if (fixedx) {
+                        if (fixedx > 0.02) {
                             $("#xTextVal").addClass("text-blue-800");
                             $("#xTextVal").removeClass("text-green-800");
                             $("#xTextVal").removeClass("text-red-800");
 
                         }
-                        if(fixedx < -0.02){
+                        if (fixedx < -0.02) {
                             $("#xTextVal").addClass("text-red-800");
                             $("#xTextVal").removeClass("text-blue-800");
                             $("#xTextVal").removeClass("text-green-800");
                         }
-                     if(fixedx < 0.02 && fixedx > -0.02 ){
+                        if (fixedx < 0.02 && fixedx > -0.02) {
                             $("#xTextVal").addClass("text-green-800");
                             $("#xTextVal").removeClass("text-blue-800");
                             $("#xTextVal").removeClass("text-red-800");
-                     }
+                        }
                     }
 
-                    if(fixedy){
-                        if(fixedd > 0.02){
+                    if (fixedy) {
+                        if (fixedd > 0.02) {
                             $("#yTextVal").addClass("text-blue-800");
                             $("#yTextVal").removeClass("text-green-800");
                             $("#yTextVal").removeClass("text-red-800");
 
                         }
-                        if(fixedy < -0.02){
+                        if (fixedy < -0.02) {
                             $("#yTextVal").addClass("text-red-800");
                             $("#yTextVal").removeClass("text-blue-800");
                             $("#yTextVal").removeClass("text-green-800");
                         }
-                     if(fixedy < 0.02 && fixedy > -0.02 ){
+                        if (fixedy < 0.02 && fixedy > -0.02) {
                             $("#yTextVal").addClass("text-green-800");
                             $("#yTextVal").removeClass("text-blue-800");
                             $("#yTextVal").removeClass("text-red-800");
-                     }
+                        }
                     }
 
-                    if(fixedz){
-                        if(fixedz > 0.02){
+                    if (fixedz) {
+                        if (fixedz > 0.02) {
                             $("#zTextVal").addClass("text-blue-800");
                             $("#zTextVal").removeClass("text-green-800");
                             $("#zTextVal").removeClass("text-red-800");
 
                         }
-                        if(fixedz < -0.02){
+                        if (fixedz < -0.02) {
                             $("#zTextVal").addClass("text-red-800");
                             $("#zTextVal").removeClass("text-blue-800");
                             $("#zTextVal").removeClass("text-green-800");
                         }
-                     if(fixedz < 0.02 && fixedz > -0.02 ){
+                        if (fixedz < 0.02 && fixedz > -0.02) {
                             $("#zTextVal").addClass("text-green-800");
                             $("#zTextVal").removeClass("text-blue-800");
                             $("#zTextVal").removeClass("text-red-800");
-                     }
+                        }
                     }
 
                     $("#xTextVal").text(fixedx);
@@ -258,7 +276,7 @@ function HandleRequiredResponses(rawResponse) {
                     $("#dTextVal").text(fixedd);
 
                 } else {
-        
+
                     if (!$("#dText").hasClass("build")) {
                         $("#dTextVal").removeClass("text-red-800 text-green-800 text-blue-800")
                         $("#yTextVal").removeClass("text-red-800 text-green-800 text-blue-800")
@@ -271,12 +289,12 @@ function HandleRequiredResponses(rawResponse) {
                         $("#dText").addClass("build");
                         $("#dTextVal").addClass("build");
                     }
-                    
+
                     xValue = xmlDoc.getElementsByTagName("device_info")[0]["attributes"]["X"].nodeValue
                     yValue = xmlDoc.getElementsByTagName("device_info")[0]["attributes"]["Y"].nodeValue
                     zValue = xmlDoc.getElementsByTagName("device_info")[0]["attributes"]["Z"].nodeValue
-                    let sqd = Math.pow(Number(xValue), 2) + Math.pow(Number(yValue), 2)  + Math.pow(Number(zValue), 2) 
-                    let trupo =   Math.sqrt(sqd)
+                    let sqd = Math.pow(Number(xValue), 2) + Math.pow(Number(yValue), 2) + Math.pow(Number(zValue), 2)
+                    let trupo = Math.sqrt(sqd)
 
                     $("#xTextVal").text(parseFloat(xValue).toFixed(4));
                     $("#yTextVal").text(parseFloat(yValue).toFixed(4));
@@ -289,6 +307,12 @@ function HandleRequiredResponses(rawResponse) {
     }
 }
 
+function deleteVsObject(id){
+    $(".objList").empty();
+    SendCommand("<object_delete id='" + id + "' />");
+    SendCommand("<object_list />")
+
+}
 function UpdateTextarea() {
     var update = '';
     if (client_message.length)
