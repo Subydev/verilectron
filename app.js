@@ -535,7 +535,7 @@ function OpenDRO() {
     });
 
     win.loadURL(`file://${__dirname}/dro2.html`);
-    win.webContents.openDevTools()
+    // win.webContents.openDevTools()
     win.onbeforeunload = (e) => {
         Disconnect()
       
