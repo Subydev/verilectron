@@ -134,7 +134,7 @@
                                 <span class="">
                                     <img class="m-auto" src="./extraResources/tutorial.svg" aria-hidden="true" />
                                 </span>
-                                <span :class="{ 'lg:hidden': !isSidebarOpen }"> Run Tutorial</span>
+                                <span :class="{ 'lg:hidden': !isSidebarOpen }"> Run Tour</span>
                             </a>
                         </li>
                         <li class="border-t border-gray-500 pt-3">
@@ -220,11 +220,11 @@
                                         <select id="categorySelect" class="form-select" onchange="showCommands()"
                                             data-live-search="true">
                                             <option selected>Select Category</option>
-                                            <option value="CAD">CAD</option>
-                                            <option value="General">General</option>
-                                            <option value="Verisurf Database">Verisurf Database</option>
+                                            <option value="CAD">CAD Views</option>
+                                            <option value="General">General (File Open, Settings, Import Data..) </option>
+                                            <option value="Verisurf Database">Working inside the Verisurf Database</option>
                                             <option value="Device">Device</option>
-                                            <option value="Measure">Measure</option>
+                                            <option value="Measure">Measure (Measure Feature, Trigger, etc.)</option>
                                             <option value="Report">Report</option>
                                             <option value="All">All</option>
                                         </select>
@@ -284,7 +284,21 @@
                     
                     <!-- TODO:Set Search Content ... -->
                     <div class="flex flex-col space-y-4">
-                            <div class="flex flex-row items-center space-x-4 ">
+
+                        <div class="flex flex-col pl-6 pr-6">
+                            <span class="flex w-full ">
+                                <input type="text" onkeyup="searchMd()" name="search" id="searchBar" placeholder="Search"
+                                    class=" px-3 py-3  w-full flex text-gray-200 border-t-2 border-r-2 border-l-2 border-opacity-0 hover:border-opacity-100 hover:border-blue-400 hover:border-2  placeholder-gray-200 bg-gray-700 h-6 rounded-t-md focus:outline-none  md:focus:shadow focus:" />
+                            </span>
+                            <span class="searchresults rounded-b-md border-l border-r border-b hover:border-t border-gray-500 flex overflow-x-auto pt-0 max-h-40 bg-gray-700 shadow-2xl">
+
+                                <ul class="searchlistresults flex flex-col rounded-b-md bg-gray-700 pl-6 -ml-6 divide-y-2">
+                        
+                                </ul>
+                            </span>
+
+                        </div>
+                            <!-- <div class="flex flex-row items-center space-x-4 ">
                                 <span class=" flex-col pl-4">
                                     <svg class="w-5 h-5 text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke="currentColor">
@@ -297,14 +311,14 @@
                                         class=" px-4 flex-1 py-3 text-bluegray-600 bg-bluegray-200 h-6 rounded-md hover:bg-gray-300 focus:outline-none md:focus:bg-gray-300 md:focus:shadow md:focus:border" />
                                 </span>
                         
-                            </div>
+                            </div> -->
                             <!-- TODO:Search Results Panel Content ... -->
-                            <div class="searchresults overflow-x-auto pt-0 mx-4 max-h-40 rounded-xl bg-gray-700 shadow-2xl">
+                            <!-- <div class="searchresults overflow-x-auto pt-0 mx-4 max-h-40 rounded-xl bg-gray-700 shadow-2xl">
                         
                                 <ul class="searchlistresults">
                         
                                 </ul>
-                            </div>
+                            </div> -->
                         
                         <!-- TODO:Set PopupSettings  Panel Content ... -->
                         <div class="pl-7  pt-2 flex flex-col justify-center items-start">

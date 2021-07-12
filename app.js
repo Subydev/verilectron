@@ -19,6 +19,8 @@ var connection = false;
 var client_message = "";
 var server_message = "";
 var verisurfRunning = false;
+var vPath = {}
+
 //*---------- Initialization FunctionS ---------->
 
 //*?---------- Check User Storage Functions ---------->
@@ -40,13 +42,13 @@ const isMcamRunning = async () => {
 userSetup();
 
 async function userSetup() {
-    const userSettings = settings.getSync()
+    const userSettings = await settings.get()
     const now = new Date();
     const currAppVer = pjson.version
 
     if (!userSettings.stats) {
         console.log("New user found, creating settings")
-        settings.setSync("stats", {
+        await settings.set("stats", {
             droSessions: 0,
             sessions: 0,
             resized: 0,
@@ -55,7 +57,7 @@ async function userSetup() {
             },
         });
     }
-    settings.setSync("stats", {
+   await settings.set("stats", {
         sessions: await settings.get('stats.sessions') + 1,
         resized: await settings.get('stats.resized'),
         currDate: dateFormat(now, "mm/dd/yy"),
@@ -85,7 +87,7 @@ async function userSetup() {
 myintro.onexit(function () {
     myintro.showHints();
     $("#mdContent").hide();
-    settings.set("tour", {
+    settings.setSync("tour", {
         completed: true,
     });
     contInit();
@@ -106,6 +108,7 @@ function togglePopups (e){
 
 //*?----------Check Mastercam Running ---------->
 const bLaunchMcam = async () => {
+
     regedit.list(
         "HKLM\\SOFTWARE\\CNC Software, Inc.",
         function (err, listResult) {
@@ -145,10 +148,10 @@ const bLaunchMcam = async () => {
                 );
                 //?Map an OnClick to send the version selected to childexec.
                 text = `<a onClick="OpenVerisurf(this)" id="${item}"class = "dropdown-item" href="#">${item.replace("Mastercam", "Verisurf")}</a>`;
-                console.log(item)
                 textToInsert += text;
             });
             $("#versionSelector").append(textToInsert);
+
         }
     );
 }
@@ -171,12 +174,14 @@ async function setSettings(isIncrementing = false, setting = '', value = '') {
         await settings.set(setting, oldVal === undefined ? 0 : (oldVal + 1))
     }
 }
-
 async function setMCamSettings(count, filePath, item) {
+    console.log(filePath, item);
+
     await settings.set(`versions.${item}`, {
         exeName: "Mastercam.exe",
         directory: filePath,
     });
+
 }
 
 function RunTutorial() {
@@ -191,7 +196,7 @@ function RunTutorial() {
                 },
                 {
                     title: "Connect",
-                    intro: "Start by connecting to Verisurf, make sure the 'localhost' port is enabled in Verisurf SDK Preferences.",
+                    intro: "Start by connecting to Verisurf, make sure the 'TCP' port is enabled in Verisurf SDK Preferences.",
                     element: document.querySelector(".connectButton"),
                 },
                 {
@@ -206,7 +211,7 @@ function RunTutorial() {
                 },
                 {
                     title: "ID",
-                    intro: "For certain commands, you need an ID that identifies something, you can set that here.",
+                    intro: "For certain commands, you need an ID that identifies something, you can set that here. Commands requiring an ID are shown inside the documentation.",
                     element: document.querySelector(".idTour"),
                 },
                 {
@@ -245,8 +250,6 @@ function sClosed(){
     $('.searchlistresults').empty();
     // $('.searchBar').val();
     document.getElementById("searchBar").value = ``;
-    
-
 
 }
 function searchMd() {
@@ -262,7 +265,7 @@ function searchMd() {
         else { 
             $('.searchlistresults').find(`#${x.indexOf(x[i])}`).remove();
 
-            text = `<a onClick="searchItemSend('${x[i].val}')" class="dropdown-item " id="${x.indexOf(x[i])}" href="#">${x[i].name}</a>`;
+            text = `<a onClick="searchItemSend('${x[i].val}')" class="dropdown-item w-full flex flex-row " id="${x.indexOf(x[i])}" href="#">${x[i].name}</a>`;
             $(".searchlistresults").append(text);
         }
 
@@ -286,19 +289,6 @@ function showLog(){
     shell.openPath(path)
 }
 
-function calculateTimeBetween(start, end) {     
-    let diff = end - start;
-    let hours = Math.floor(diff / 36e5);
-    let minutes = Math.floor((diff % 36e5) / 6e4);
-    let seconds = Math.floor(((diff % 36e5) % 6e4) / 1e3);
-    let milliseconds = (((diff % 36e5) % 6e4) % 1e3);
-    return {
-        hours: hours,
-        minutes: minutes,
-        seconds: seconds,
-        milliseconds: milliseconds
-    };
-}
 function Connect() {
 
     if (client_message.length == undefined) {}
@@ -556,7 +546,7 @@ async function OpenVerisurf(e) {
             return result;
         })
         .catch((error) => {
-            log.warn(error);
+            log.error(error);
         });
 
     const hasSetting = hasSettings(reqVer)
@@ -564,7 +554,7 @@ async function OpenVerisurf(e) {
             return result;
         })
         .catch((error) => {
-            log.warn(error);
+            log.error(error);
         });
 
     //?Double check if has settings then get and launch.

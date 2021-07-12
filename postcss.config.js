@@ -6,7 +6,11 @@ module.exports = {
       require('@tailwindcss/ui'),
       require('daisyui')
       
-    ]
+    ],
+    purge: [
+      '*.html',
+  
+    ],  
   }
 
 module.exports = {

@@ -3,6 +3,8 @@ const colors = require('tailwindcss/colors')
 module.exports = {
   mode: '',
   purge: [
+    '*.html',
+
   ],  
   presets: [],
   darkMode: false, // or 'media' or 'class'
@@ -850,6 +852,7 @@ module.exports = {
   ],
   variants: {
     extend: {
+      width: ["responsive", "hover", "focus"] ,
       backgroundColor: ['active'],
     },
     accessibility: ['responsive', 'focus-within', 'focus'],

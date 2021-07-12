@@ -52,8 +52,8 @@ app.on("browser-window-created", (e, win) => {
 
 app.on('window-all-closed', function () {
     //? Handle some close events like resetting the version information.
-    const settings = require("electron-settings")
-    settings.unsetSync('versions')
+    // const settings = require("electron-settings")
+    // settings.unsetSync('versions')
     if (process.platform !== 'darwin') app.quit()
 })
 
