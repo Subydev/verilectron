@@ -1,6 +1,6 @@
 var net = require("net");
 const { dialog } = require("electron").remote;
-var fs = require("fs");
+                                                                                       var fs = require("fs");
 var format = require("xml-formatter");
 const settings = require("@electron/remote").require("electron-settings");
 var client;

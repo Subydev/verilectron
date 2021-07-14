@@ -1,4 +1,3 @@
-// tailwind.config.js
 module.exports = {
     // ...
     // rest of the config
@@ -11,11 +10,4 @@ module.exports = {
       '*.html',
   
     ],  
-  }
-
-module.exports = {
-    plugins: {
-      tailwindcss: {},
-      autoprefixer: {},
-    },
   }
