@@ -1,591 +1,547 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <title>Verisurf API | DRO</title>
-        <link rel="stylesheet" href="tailwind.css" />
-        <script src="node_modules/alpinejs/dist/cdn.min.js" , defer></script>
-         <style>
-            [x-cloak] {
-                display: none;
-            }
-        </style>
-    </head>
-
-    <body>
-        <div x-data="setup()" x-init="$refs.loading.classList.add('hidden');" @resize.window="watchScreen()">
-            <div class="flex min-h-screen">
-                <!-- Loading screen -->
-                <div x-ref="loading"
-                    class="fixed inset-0 z-50 flex items-center justify-center text-2xl font-semibold text-white ">
-                    Loading.....
-                </div>
-
-                <!-- Sidebar overlay -->
-                <div x-transition:enter="transition-opacity" x-transition:enter-start="opacity-0"
-                    x-transition:enter-end="opacity-100" x-transition:leave="transition-opacity"
-                    x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" x-show="isSidebarOpen"
-                    @click="isSidebarOpen = false" aria-hidden="true"
-                    class="fixed inset-0 z-10 bg-black bg-opacity-75 xl:hidden"
-                    
-                    ></div>
-
-              <!-- settings overlay -->
-                <div x-transition:enter="transition-opacity" x-transition:enter-start="opacity-0"
-                x-transition:enter-end="opacity-0" x-transition:leave="transition-opacity"
-                x-transition:leave-start="opacity-0" x-transition:leave-end="opacity-100" x-show="isSettingsPanelOpen"
+   <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+      <title>Verisurf API | DRO</title>
+      <link rel="stylesheet" href="tailwind.css" />
+      <script src="node_modules/alpinejs/dist/cdn.min.js" , defer></script>
+      <style>
+         [x-cloak] {
+         display: none;
+         }
+      </style>
+   </head>
+   <body>
+      <div x-data="setup()" x-init="$refs.loading.classList.add('hidden');" @resize.window="watchScreen()">
+         <div class="flex min-h-screen">
+            <!-- Loading screen -->
+            <div x-ref="loading"
+               class="fixed inset-0 z-50 flex items-center justify-center text-2xl font-semibold text-white ">
+               Loading.....
+            </div>
+            <!-- Sidebar overlay -->
+            <div x-transition:enter="transition-opacity" x-transition:enter-start="opacity-0"
+               x-transition:enter-end="opacity-100" x-transition:leave="transition-opacity"
+               x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" x-show="isSidebarOpen"
+               @click="isSidebarOpen = false" aria-hidden="true"
+               class="fixed inset-0 z-10 bg-black bg-opacity-75 xl:hidden"
+               ></div>
+            <!-- settings overlay -->
+            <div x-transition:enter="transition-opacity" x-transition:enter-start="opacity-0"
+               x-transition:enter-end="opacity-0" x-transition:leave="transition-opacity"
+               x-transition:leave-start="opacity-0" x-transition:leave-end="opacity-100" x-show="isSettingsPanelOpen"
                aria-hidden="true"
-                class="fixed inset-0 z-20 bg-black bg-opacity-75 "
-                
-                 ></div>
-                <!-- Sidebar -->
-                <div class="fixed inset-y-0 z-10 flex flex-row-reverse flex-shrink-0 h-screen transition-transform transform"
-                    :class="{ '-translate-x-full sm:-translate-x-64': !isSidebarOpen,'translate-x-0 xl:shadow-none shadow-dark-lg': isSidebarOpen }">
-                    
-                    <!-- Mini bar -->
-                    <nav aria-label="Panels buttons"
-                        class="flex flex-col items-center space-y-4 flex-shrink-0 w-20 border-r bg-bluegray-800 border-gray-600">
-
-                        <!-- Toggle sidebar button -->
-                        <div
-                            class="flex items-center bg-bluegray-800 justify-center flex-shrink-0 w-full h-full max-h-14">
-                            <button @click="isSidebarOpen = !isSidebarOpen" class="hidden sm:block p-2 overflow-hidden transition rounded-md 
-                            hover:bg-bluegray-700 hover:text-white focus:ring-offset-white hover:shadow-dark-lg">
-                                <span class="sr-only">Toggle sidebar</span>
-                                <svg aria-hidden="true" class="w-6 h-6 transition-transform transform"
-                                    :class="!isSidebarOpen ? '-rotate-180 rtl:rotate-0' : 'rtl:-rotate-180'"
-                                    xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
-                                </svg>
-                            </button>
-                        </div>
-
-                        <!-- Measure Toolbar -->
-                        <ul class="items-center justify-self-center flex-col place-self-center w-9/12 py-5 rounded-t-3xl rounded-b-3xl bg-bluegray-900 bg-opacity-40 border border-gray-900 shadow-2xl ">
-                            <li class="rounded-2xl hover:bg-blue-400 hover:bg-opacity-5 ">
-                                <a href="#" onclick="SendCommand('<measure_point />')" >
-                                    <div >
-                                        <img src="./extraResources/point32.png"
-                                            class="mx-auto scale-75 w-full h-full filter brightness-125 transition duration-500 ease-in-out transform hover:scale-75 ..." />
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="rounded-2xl hover:bg-blue-400 hover:bg-opacity-5 ">
-                                <a href="#" onclick="SendCommand('<measure_line />')" >
-                                    <div>
-                                        <img src="./extraResources/line32.png"
-                                            class="mx-auto scale-75 w-full h-full filter brightness-125 transition duration-500 ease-in-out transform hover:scale-75 ..." />
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="rounded-2xl hover:bg-blue-400 hover:bg-opacity-5 ">
-                                <a href="#" onclick="SendCommand('<measure_circle />')" >
-                                    <div>
-                                        <img src="./extraResources/circle32.png"
-                                            class="mx-auto scale-75 w-full h-full filter brightness-125 transition duration-500 ease-in-out transform hover:scale-75 ..." />
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="rounded-2xl hover:bg-blue-400 hover:bg-opacity-5 ">
-                                <a href="#" onclick="SendCommand('<measure_spline />')" >
-                                    <div >
-                                        <img src="./extraResources/spline32.png"
-                                            class="mx-auto scale-75 w-full h-full filter brightness-125 transition duration-500 ease-in-out transform hover:scale-75 ..." />
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="rounded-2xl hover:bg-blue-400 hover:bg-opacity-5 ">
-                                <a href="#" onclick="SendCommand('<measure_ellipse />')" >
-                                    <div >
-                                        <img src="./extraResources/ellipse32.png"
-                                            class="mx-auto scale-75 w-full h-full filter brightness-125 transition duration-500 ease-in-out transform hover:scale-75 ..." />
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="rounded-2xl hover:bg-blue-400 hover:bg-opacity-5 ">
-                                <a href="#" onclick="SendCommand('<measure_slot />')" >
-                                    <div >
-                                        <img src="./extraResources/slot32.png"
-                                            class="mx-auto scale-75 w-full h-full filter brightness-125 transition duration-500 ease-in-out transform hover:scale-75 ..." />
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="rounded-2xl hover:bg-blue-400 hover:bg-opacity-5 ">
-                                <a href="#" onclick="SendCommand('<measure_plane />')" >
-                                    <div >
-                                        <img src="./extraResources/plane32.png"
-                                            class="mx-auto scale-75 w-full h-full filter brightness-100 transition duration-500 ease-in-out transform hover:scale-75 ..." />
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="rounded-2xl hover:bg-blue-400 hover:bg-opacity-5 ">
-                                <a href="#" onclick="SendCommand('<measure_sphere />')" >
-                                    <div >
-                                        <img src="./extraResources/sphere32.png"
-                                            class="mx-auto scale-75 w-full h-full filter brightness-100 transition duration-500 ease-in-out transform hover:scale-75 ..." />
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="rounded-2xl hover:bg-blue-400 hover:bg-opacity-5 ">
-                                <a href="#" onclick="SendCommand('<measure_cylinder />')" >
-                                    <div >
-                                        <img src="./extraResources/cyl32.png"
-                                            class="mx-auto scale-75 w-full h-full filter brightness-100 transition duration-500 ease-in-out transform hover:scale-75 ..." />
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="rounded-2xl hover:bg-blue-400 hover:bg-opacity-5 ">
-                                <a href="#" onclick="SendCommand('<measure_cone />')" >
-                                    <div >
-                                        <img src="./extraResources/cone32.png"
-                                            class="mx-auto scale-75 w-full h-full filter brightness-100 transition duration-500 ease-in-out transform hover:scale-75 ..." />
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="rounded-2xl hover:bg-blue-400 hover:bg-opacity-5 ">
-                                <a href="#" onclick="SendCommand('<build />')" >
-                                    <div >
-                                        <img src="./extraResources/build32.png"
-                                            class="mx-auto scale-75 w-full h-full filter brightness-100 transition duration-500 ease-in-out transform hover:scale-75 ..." />
-                                    </div>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                    <!-- Main Side Bar Panel -->
-                    <nav aria-label="Main"
-                        class="bg-bluegray-800 overflow-y-auto overscroll-contain  flex flex-col flex-shrink-0 w-64 h-full transition-transform transform border-r border-gray-600">
-
-                        <!-- VS Corp Logo -->
-                        <div class="flex items-center justify-center p-3 flex-shrink-0 -4">
-                            <a class=""><img class="" src="./extraResources/logo.png"
-                                    aria-hidden="true"></i>
-                            </a>
-                        </div>
-
-                        <!--? MenuBar -->
-                        <div
-                            class="w-auto flex flex-1  flex-col items-center bg-bluegray-800  space-y-2 border shadow-2xl border-gray-900 rounded-md my-2 mx-1">
-                            <div data-theme="vstheme" class="collapse w-full  bg-bluegray-900 bg-opacity-40 collapse-arrow ">
-                                <input type="checkbox" onclick="SendCommand('<object_list />');">
-                                <div class="collapse-title text-lg font-normal filter ">
-                                    Points
-                                </div>
-                                <div id="pointsTree" class="objList collapse-content h-48 overflow-y-auto flex -mx-3 flex-col bg-bluegray-800">
-                                    <!-- !Point Tree Content -->
-                                </div>
-                            </div>
-
-                            <div data-theme="vstheme" class="collapse w-full  bg-bluegray-900 bg-opacity-40 collapse-arrow ">
-                                <input type="checkbox" onclick="SendCommand('<object_list />');">
-                                <div class="collapse-title text-lg font-normal filter ">
-                                    Alignments
-                                </div>
-                                <div id="alignmentsTree" class="objList collapse-content h-48 overflow-y-auto flex -mx-3 flex-col bg-bluegray-800">
-                                    <!-- !Alignment Tree Content -->
-                                </div>
-                            </div>
-                            <div data-theme="vstheme" class="collapse w-full  bg-bluegray-900 bg-opacity-40 collapse-arrow ">
-                                <input type="checkbox" onclick="SendCommand('<object_list />');">
-                                <div class="collapse-title text-lg font-normal filter ">
-                                    Features
-                                </div>
-                                <div id="featuresTree" class="objList collapse-content h-48 overflow-y-auto flex flex -mx-3 flex-col bg-bluegray-800">
-                                    <!-- !Feature Tree Content -->
-                                </div>
-                            </div>
-                            <div data-theme="vstheme" class="collapse w-full  bg-bluegray-900 bg-opacity-40 collapse-arrow ">
-                                <input type="checkbox" onclick="SendCommand('<object_list />');">
-                                <div class="collapse-title text-lg font-normal  filter ">
-                                    Analysis
-                                </div>
-                                <div id="analysisTree" class="objList collapse-content h-48 overflow-y-auto flex flex -mx-3 flex-col bg-bluegray-800">
-                        
-                                    <!-- !Analysis Content -->
-                                </div>
-                            </div>
-                            <div data-theme="vstheme" class="collapse w-full  bg-bluegray-900 bg-opacity-40 collapse-arrow ">
-                                <input type="checkbox" onclick="SendCommand('<object_list />');">
-                                <div class="collapse-title text-lg font-normal   filter ">
-                                    Reports
-                                </div>
-                                <div id="reportsTree" class="objList collapse-content flex h-48 overflow-y-auto flex -mx-3 flex-col bg-bluegray-800">
-                        
-                                    <!-- !Reports Tree Content -->
-                                    
-                                </div>
-                            </div>
-                            <div data-theme="vstheme" class="collapse w-full  bg-bluegray-900 bg-opacity-40 collapse-arrow ">
-                                <input type="checkbox">
-                                <div class="collapse-title text-lg font-normal filter ">
-                                    Targets
-                                </div>
-                                <div id="targetsTree" class="objList collapse-content flex -mx-3 h-48 overflow-y-auto flex flex-col bg-bluegray-800">
-                                    <!-- !Target Tree Content -->
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Side BarFooter -->
-                        <div class="mt-auto">
-                            <div class="bg-gray-900 bg-opacity-40 space-y-4 pt-2 border-b-0 pb-4 border border-gray-700 ">
-
-                                <!-- Measure Mode Header  -->
-                                <div class="flex py-0">
-                                    <p class="text-2xl pl-2 font-light">Measure Mode:</p>
-                                </div>
-
-                                <!-- Measure Mode Container -->
-                                <div class="flex ">
-                                    <select id="pointModeSelect"
-                                    onchange="togglePointMode()"
-                                        class="font-normal select select-sm-bordered w-auto flex-1 mx-2 rounded text-lg bg-gray-200 text-black select-sm">
-                                        <option value="0">Single</option>
-                                        <option value="1">Continuous</option>
-                                        <option value="2">Stationary</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="bg-gray-900 bg-opacity-40 pt-4 space-y-4 border-t-0 px-2 pb-6 border border-gray-700 ">
-
-                                <!-- Measure Controls         -->
-                                <div data-theme="vstheme" class="flex ">
-                                    <button onclick="SendCommand('<measure_done />');" class="w-auto flex-1 mr-1 rounded btn btn-md btn-info hover:opacity-70">Done</button>
-                                    <button onclick="SendCommand('<measure_undo />');" class="w-auto flex-1 ml-1 rounded btn btn-md btn-warning hover:opacity-70">Undo</button>
-                                </div>
-                                <div data-theme="vstheme" class="flex-shrink-0 ">
-                                    <button onclick="SendCommand('<measure_trigger />');" class="w-full btn btn-lg rounded btn-success hover:opacity-70">Trigger</button>
-                                </div>
-                            </div>
-                        </div>
-
-                    </nav>
-                </div>
-
-                <!-- Page content -->
-                <div class="flex flex-col flex-1 sm:pl-16"
-                    :class="{ 'xl:pl-80': isSidebarOpen }">
-                    <!-- Header  -->
-                    <header
-                        class="sticky top-0 z-[5] justify-between flex items-center flex-shrink-0 h-full px-2 
-                        bg-gradient-to-l from-bluegray-700 via-bluegray-800 to-gray-800
-                        border-b border-gray-600 sm:px-4 max-h-14">
-                        <!-- Header Title -->
-                        <a href="https://verisurf.com" target="_blank" class="hidden sm:block">
-                            <span class="text-2xl pl-2 text-color-white subpixel-antialiased">Verisurf DRO</span>
-                        </a>
-                        <a href="https://github.com/verisurf/verisurf-api" target="_blank" class="inline-flex items-center justify-center bg-opacity-10 p- space-x-1 bg-bluegray-300 rounded-full shadow hover:bg-opacity-20">
-                            <span>
-                              <svg class="w-8 h-8 text-gray-300" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
-                              </svg>
-                            </span>
-                            <span></span>
-                          </a>
-                    </header>
-                    <div class="flex flex-1 bg-gray-900">
-                        <!-- Main -->
-                        <main class="flex-1 p-12" aria-labelledby="page-title">
-                            <!-- Main Content -->
-
-                            <!-- WIP DRO READOUT  -->
-                            <div id="droTextContainer" class="bg-gray-800 rounded-lg shadow-2xl border-gray-700 border flex flex-col px-2">
-                            
-                                <!-- !X ROW -->
-                                <div class="flex flex-row items-center justify-between">
-                                    <div class="flex">
-                                        <p id="xText" class="2xl:text-15xl xl:text-11xl lg:text-9xl md:text-7xl opacity-80 "></p>
-                                    </div>
-                                    <div class="flex ">
-                                        <p id="xTextVal" class="2xl:text-15xl xl:text-11xl lg:text-9xl md:text-7xl text-right tracking-wider font-mono opacity-90 "></p>
-                                    </div>
-                                </div>
-                            
-                                <!-- !Y ROW -->
-                                <div class="flex flex-row items-center justify-between">
-                                    <div class="flex">
-                                        <p id="yText" class="2xl:text-15xl xl:text-11xl lg:text-9xl md:text-7xl opacity-80 "></p>
-                            
-                                    </div>
-                                    <div class="flex ">
-                                        <p id="yTextVal" class="2xl:text-15xl xl:text-11xl lg:text-9xl md:text-7xl text-right tracking-wider font-mono opacity-90 ">
-                                        </p>
-                                    </div>
-                                </div>
-                            
-                                <!-- !Z ROW -->
-                                <div class="flex flex-row items-center justify-between">
-                                    <div class="flex">
-                                        <p id="zText" class="2xl:text-15xl xl:text-11xl lg:text-9xl md:text-7xl opacity-80 "></p>
-                                    </div>
-                                    <div class="flex ">
-                                        <p id="zTextVal" class="2xl:text-15xl xl:text-11xl lg:text-9xl md:text-7xl opacity-90  text-right tracking-wider font-mono">
-                                        </p>
-                                    </div>
-                                </div>
-                            
-                                <!-- !3D ROW -->
-                                <div class="flex flex-row items-center justify-between">
-                                    <div class="flex">
-                                        <p id="dText" class="2xl:text-15xl xl:text-11xl lg:text-9xl md:text-7xl opacity-80  "></p>
-                                    </div>
-                                    <div class="flex ">
-                                        <p id="dTextVal" class="2xl:text-15xl xl:text-11xl lg:text-9xl md:text-7xl opacity-90 text-right tracking-wider font-mono ">
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-     
-
-                            <!-- Controls Box -->
-                            <div x-show="!isSidebarOpen" class="flex mt-auto absolute bottom-10 left-24" >
-                                <ul class="flex flex-row px-8 py-3 rounded-full space-x-3 bg-bluegray-800">
-                                    <li id="doneBtnsm" onclick="SendCommand('<measure_done />')" class="rounded-full bg-blue-800 bg-opacity-50 p-1 hover:bg-opacity-90 shadow-2xl">
-                                        <a href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 0 24 24" width="36px" fill="#FFFFFF">
-                                                <path d="M0 0h24v24H0V0z" fill="none" />
-                                                <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
-                                            </svg>
-                                        </a>
-                                    </li>
-                                    <li id="undoBtnsm" onclick="SendCommand('<measure_undo />');"class="rounded-full bg-yellow-800 bg-opacity-70 p-1 hover:bg-opacity-90 ">
-                                        <a href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 0 24 24" width="36px" fill="#FFFFFF">
-                                                <path d="M0 0h24v24H0V0z" fill="none" />
-                                                <path
-                                                    d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z" />
-                                            </svg> </a>
-                                    </li>
-                                    <li id="trgrBtnsm" onclick="SendCommand('<measure_trigger />');" class="rounded-full bg-green-800 bg-opacity-70 p-1 hover:bg-opacity-90 ">
-                                        <a href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 0 24 24" width="36px" fill="#FFFFFF">
-                                                <path d="M0 0h24v24H0V0z" fill="none" />
-                                                <path d="M10 8.64L15.27 12 10 15.36V8.64M8 5v14l11-7L8 5z" />
-                                            </svg>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </main>
-                    </div>
-                </div>
-            </div>
-
-            <div>
-                <button @click="isSettingsPanelOpen = true"
-                    class="fixed right-0 px-3 py-1 shadow-2xl text-xl text-white uppercase transform rotate-90 translate-x-4 bg-gray-600 top-1/2 rounded-b-md">
-                    Stats
-                </button>
-            </div>
-          
-            <!--TODO: Settings Panel -->
-            <div x-show="isSettingsPanelOpen" @click.away="isSettingsPanelOpen = false"
-                x-transition:enter="transition transform duration-300"
-                x-transition:enter-start="translate-x-full opacity-30  ease-in"
-                x-transition:enter-end="translate-x-0 opacity-100 ease-out"
-                x-transition:leave="transition transform duration-300"
-                x-transition:leave-start="translate-x-0 opacity-100 ease-out"
-                x-transition:leave-end="translate-x-full opacity-0 ease-in"
-                class="fixed inset-y-0 right-0 z-20 flex flex-col bg-bluegray-800 shadow-dark-lg bg-opacity-95 w-2/3"
-                style="backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px)">
-
-              
-                <div class="flex items-center justify-between flex-shrink-0 p-2">
-
-                    <!-- Settings Panel Header ... -->
-                    <h6 class="text-2xl pl-2 text-color-white subpixel-antialiased">Stats Panel</h6>
-                    <button @click="isSettingsPanelOpen = false" class="p-2 rounded-md focus:outline-none focus:ring hover:bg-bluegray-700 hover:text-white focus:ring-offset-white hover:shadow-dark-lg">
-                        <svg class="w-6 h-6 text-gray-200" xmlns="http://www.w3.org/2000/svg" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
+               class="fixed inset-0 z-20 bg-black bg-opacity-75 "
+               ></div>
+            <!-- Sidebar -->
+            <div class="fixed inset-y-0 z-10 flex flex-row-reverse flex-shrink-0 h-screen transition-transform transform"
+               :class="{ '-translate-x-full sm:-translate-x-64': !isSidebarOpen,'translate-x-0 xl:shadow-none shadow-dark-lg': isSidebarOpen }">
+               <!-- Mini bar -->
+               <nav aria-label="Panels buttons"
+                  class="flex flex-col items-center space-y-4 flex-shrink-0 w-20 border-r bg-bluegray-800 border-gray-600">
+                  <!-- Toggle sidebar button -->
+                  <div
+                     class="flex items-center bg-bluegray-800 justify-center flex-shrink-0 w-full h-full max-h-14">
+                     <button @click="isSidebarOpen = !isSidebarOpen" class="hidden sm:block p-2 overflow-hidden transition rounded-md 
+                        hover:bg-bluegray-700 hover:text-white focus:ring-offset-white hover:shadow-dark-lg">
+                        <span class="sr-only">Toggle sidebar</span>
+                        <svg aria-hidden="true" class="w-6 h-6 transition-transform transform"
+                           :class="!isSidebarOpen ? '-rotate-180 rtl:rotate-0' : 'rtl:-rotate-180'"
+                           xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                           stroke="currentColor">
+                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
                         </svg>
-                    </button>
-                </div>
-                <div class="flex-1 max-h-full p-4 overflow-hidden hover:overflow-y-scroll space-y-6 overflow-y-auto">
-                
-                    <!-- Settings Panel Content ... -->
-
-                    <!-- Random Stats Content ... -->
-                    <div class="grid grid-cols-1 gap-8 p-4 lg:grid-cols-2 xl:grid-cols-4">
-                        <div class="stats shadow overflow-x-hidden bg-gray-800 bg-opacity-100 border border-gray-900 rounded-lg shadow-2xl">
-                            <div class="stat bg-opacity-0">
-                                <div class="stat-title">Total DRO Sessions</div>
-                                <div id="droSeshVal" class="stat-value"></div>
-                                <div class="stat-desc">this month</div>
-                            </div>
+                     </button>
+                  </div>
+                  <!-- Measure Toolbar -->
+                  <ul class="items-center justify-self-center flex-col place-self-center w-9/12 py-5 rounded-t-3xl rounded-b-3xl bg-bluegray-900 bg-opacity-40 border border-gray-900 shadow-2xl ">
+                     <li class="rounded-2xl hover:bg-blue-400 hover:bg-opacity-5 ">
+                        <a href="#" onclick="SendCommand('<measure_point />')" >
+                           <div >
+                              <img src="./extraResources/point32.png"
+                                 class="mx-auto scale-75 w-full h-full filter brightness-125 transition duration-500 ease-in-out transform hover:scale-75 ..." />
+                           </div>
+                        </a>
+                     </li>
+                     <li class="rounded-2xl hover:bg-blue-400 hover:bg-opacity-5 ">
+                        <a href="#" onclick="SendCommand('<measure_line />')" >
+                           <div>
+                              <img src="./extraResources/line32.png"
+                                 class="mx-auto scale-75 w-full h-full filter brightness-125 transition duration-500 ease-in-out transform hover:scale-75 ..." />
+                           </div>
+                        </a>
+                     </li>
+                     <li class="rounded-2xl hover:bg-blue-400 hover:bg-opacity-5 ">
+                        <a href="#" onclick="SendCommand('<measure_circle />')" >
+                           <div>
+                              <img src="./extraResources/circle32.png"
+                                 class="mx-auto scale-75 w-full h-full filter brightness-125 transition duration-500 ease-in-out transform hover:scale-75 ..." />
+                           </div>
+                        </a>
+                     </li>
+                     <li class="rounded-2xl hover:bg-blue-400 hover:bg-opacity-5 ">
+                        <a href="#" onclick="SendCommand('<measure_spline />')" >
+                           <div >
+                              <img src="./extraResources/spline32.png"
+                                 class="mx-auto scale-75 w-full h-full filter brightness-125 transition duration-500 ease-in-out transform hover:scale-75 ..." />
+                           </div>
+                        </a>
+                     </li>
+                     <li class="rounded-2xl hover:bg-blue-400 hover:bg-opacity-5 ">
+                        <a href="#" onclick="SendCommand('<measure_ellipse />')" >
+                           <div >
+                              <img src="./extraResources/ellipse32.png"
+                                 class="mx-auto scale-75 w-full h-full filter brightness-125 transition duration-500 ease-in-out transform hover:scale-75 ..." />
+                           </div>
+                        </a>
+                     </li>
+                     <li class="rounded-2xl hover:bg-blue-400 hover:bg-opacity-5 ">
+                        <a href="#" onclick="SendCommand('<measure_slot />')" >
+                           <div >
+                              <img src="./extraResources/slot32.png"
+                                 class="mx-auto scale-75 w-full h-full filter brightness-125 transition duration-500 ease-in-out transform hover:scale-75 ..." />
+                           </div>
+                        </a>
+                     </li>
+                     <li class="rounded-2xl hover:bg-blue-400 hover:bg-opacity-5 ">
+                        <a href="#" onclick="SendCommand('<measure_plane />')" >
+                           <div >
+                              <img src="./extraResources/plane32.png"
+                                 class="mx-auto scale-75 w-full h-full filter brightness-100 transition duration-500 ease-in-out transform hover:scale-75 ..." />
+                           </div>
+                        </a>
+                     </li>
+                     <li class="rounded-2xl hover:bg-blue-400 hover:bg-opacity-5 ">
+                        <a href="#" onclick="SendCommand('<measure_sphere />')" >
+                           <div >
+                              <img src="./extraResources/sphere32.png"
+                                 class="mx-auto scale-75 w-full h-full filter brightness-100 transition duration-500 ease-in-out transform hover:scale-75 ..." />
+                           </div>
+                        </a>
+                     </li>
+                     <li class="rounded-2xl hover:bg-blue-400 hover:bg-opacity-5 ">
+                        <a href="#" onclick="SendCommand('<measure_cylinder />')" >
+                           <div >
+                              <img src="./extraResources/cyl32.png"
+                                 class="mx-auto scale-75 w-full h-full filter brightness-100 transition duration-500 ease-in-out transform hover:scale-75 ..." />
+                           </div>
+                        </a>
+                     </li>
+                     <li class="rounded-2xl hover:bg-blue-400 hover:bg-opacity-5 ">
+                        <a href="#" onclick="SendCommand('<measure_cone />')" >
+                           <div >
+                              <img src="./extraResources/cone32.png"
+                                 class="mx-auto scale-75 w-full h-full filter brightness-100 transition duration-500 ease-in-out transform hover:scale-75 ..." />
+                           </div>
+                        </a>
+                     </li>
+                     <li class="rounded-2xl hover:bg-blue-400 hover:bg-opacity-5 ">
+                        <a href="#" onclick="SendCommand('<build />')" >
+                           <div >
+                              <img src="./extraResources/build32.png"
+                                 class="mx-auto scale-75 w-full h-full filter brightness-100 transition duration-500 ease-in-out transform hover:scale-75 ..." />
+                           </div>
+                        </a>
+                     </li>
+                  </ul>
+               </nav>
+               <!-- Main Side Bar Panel -->
+               <nav aria-label="Main"
+                  class="bg-bluegray-800 overflow-y-auto overscroll-contain  flex flex-col flex-shrink-0 w-64 h-full transition-transform transform border-r border-gray-600">
+                  <!-- VS Corp Logo -->
+                  <div class="flex items-center justify-center p-3 flex-shrink-0 -4">
+                     <a class=""><img class="" src="./extraResources/logo.png"
+                        aria-hidden="true"></i>
+                     </a>
+                  </div>
+                  <!--? MenuBar -->
+                  <div
+                     class="w-auto flex flex-1  flex-col items-center bg-bluegray-800  space-y-2 border shadow-2xl border-gray-900 rounded-md my-2 mx-1">
+                     <div data-theme="vstheme" class="collapse w-full  bg-bluegray-900 bg-opacity-40 collapse-arrow ">
+                        <input type="checkbox" onclick="SendCommand('<object_list />');">
+                        <div class="collapse-title text-lg font-normal filter ">
+                           Points
                         </div>
-                        <div class="stats shadow overflow-x-hidden bg-gray-800 bg-opacity-100 border border-gray-900 rounded-lg shadow-2xl">
-                            <div class="stat bg-opacity-0">
-                                <div class="stat-title">Last Calibration</div>
-                                <div id="lastCalVal" class="stat-value"></div>
-                                <div class="stat-desc">I++ CMM Interface</div>
-                            </div>
+                        <div id="pointsTree" class="objList collapse-content h-48 overflow-y-auto flex -mx-3 flex-col bg-bluegray-800">
+                           <!-- !Point Tree Content -->
                         </div>
-                        <div class="stats shadow overflow-x-hidden bg-gray-800 bg-opacity-100 border border-gray-900 rounded-lg shadow-2xl">
-                            <div class="stat bg-opacity-0">
-                                <div class="stat-title">API Commands Sent</div>
-                                <div id="apiComCountVal" class="stat-value"></div>
-                                <div class="stat-desc">API Pro</div>
-                            </div>
+                     </div>
+                     <div data-theme="vstheme" class="collapse w-full  bg-bluegray-900 bg-opacity-40 collapse-arrow ">
+                        <input type="checkbox" onclick="SendCommand('<object_list />');">
+                        <div class="collapse-title text-lg font-normal filter ">
+                           Alignments
                         </div>
-                        <div class="stats shadow overflow-x-hidden bg-gray-800 bg-opacity-100 border border-gray-900 rounded-lg shadow-2xl">
-                            <div class="stat bg-opacity-0">
-                                <div class="stat-title">App Resized</div>
-                                <div id="resizedVal" class="stat-value"></div>
-                                <div class="stat-desc">You're on a roll!</div>
-                            </div>
+                        <div id="alignmentsTree" class="objList collapse-content h-48 overflow-y-auto flex -mx-3 flex-col bg-bluegray-800">
+                           <!-- !Alignment Tree Content -->
                         </div>
-                    </div>
-
-                    <!-- Charts -->
-                    <div class="grid grid-cols-1 p-4 space-y-8 lg:gap-8 lg:space-y-0 lg:grid-cols-3">
-                        <!-- Bar chart card -->
-                        <div class="col-span-2 bg-gray-800 bg-opacity-100 border border-gray-900 rounded-lg  shadow-2xl">
-                          <!-- Card header -->
-                          <div class="flex items-center justify-between p-4 border-b dark:border-primary">
-                            <h4 class="text-lg font-semibold text-gray-300 dark:text-light">Best Analysis Summary</h4>
-                            <div class="flex items-center space-x-2">
-                              <span class="text-sm text-gray-500 dark:text-light">Results are calculated using the Avg. of each Analysis.</span>
-                            </div>
-                          </div>
-                          <!-- Chart -->
-                          <div class="relative p-4 h-72">
-                            <canvas id="hbarChart"></canvas>
-                          </div>
+                     </div>
+                     <div data-theme="vstheme" class="collapse w-full  bg-bluegray-900 bg-opacity-40 collapse-arrow ">
+                        <input type="checkbox" onclick="SendCommand('<object_list />');">
+                        <div class="collapse-title text-lg font-normal filter ">
+                           Features
                         </div>
-        
-                        <!-- Doughnut chart card -->
-                        <div class="bg-gray-800 bg-opacity-100 border border-gray-900 rounded-lg  shadow-2xl">
-                          <!-- Card header -->
-                          <div class="flex items-center justify-between p-4 border-b dark:border-primary">
-                            <h4 class="text-lg font-semibold text-gray-300 dark:text-light">Device Usage</h4>
-                            <div class="flex items-center">
-                            </div>
-                          </div>
-                          <!-- Chart -->
-                          <div class="relative p-4 h-72">
-                            <canvas id="donutChart"></canvas>
-                          </div>
+                        <div id="featuresTree" class="objList collapse-content h-48 overflow-y-auto flex flex -mx-3 flex-col bg-bluegray-800">
+                           <!-- !Feature Tree Content -->
                         </div>
-                      </div>
-               
-                      <div class="grid grid-cols-1 p-4 space-y-8 lg:gap-8 lg:space-y-0 lg:grid-cols-3">
-                        <!-- Analysis Details chart -->
-                        <div class="col-span-1 bg-gray-800 bg-opacity-100 border border-gray-900 rounded-lg shadow-2xl">
-                          <!-- Card header -->       
-
-                          <div class="p-4 border-b ">
-                            <h4 id="anlysisDetHeader" class="text-lg font-semibold text-gray-300 ">Breakdown</h4>
-                          </div>
-                          <p class="p-4">
-                            <span class="text-2xl font-medium text-gray-600 font-mono" id="currentPoint">- / --</span>
-                            <span class="text-sm font-medium text-gray-300">Point ID</span>
-                          </p>
-        
-                          <!-- Chart -->
-                          <div class="relative p-4 h-72">
-                            <canvas id="smBarChart"></canvas>
-                          </div>
+                     </div>
+                     <div data-theme="vstheme" class="collapse w-full  bg-bluegray-900 bg-opacity-40 collapse-arrow ">
+                        <input type="checkbox" onclick="SendCommand('<object_list />');">
+                        <div class="collapse-title text-lg font-normal  filter ">
+                           Analysis
                         </div>
-        
-                        <!-- Analysis Overview chart card -->
-                        <div class="col-span-2 bg-gray-800 bg-opacity-100 border border-gray-900 rounded-lg shadow-2xl">
-                          <!-- Card header -->
-                          <div class="flex items-center justify-between space-x-4 p-4 border-b ">
-                            <h4 id="analysisOverHeader" class="text-lg font-semibold text-gray-300 dark:text-light">Overview</h4>
-                            <select onchange="handleAnalysisSelectChange(this)" id="analysisSelect" class="font-normal select w-40 rounded bg-bluegray-700 text-white select-sm">
-                                <option value="0">analysis1</option> 
-                                <option value="1">auto-align1</option> 
-                                <option value="2">analysis2</option> 
-                                <option value="3">analysis3</option>
-                            </select>
-                          </div>
-                          <p class="p-4">
-                            <span class="text-2xl font-medium text-gray-200 font-mono" id="maxpts">--</span>
-                            <span class="text-sm font-medium text-gray-300">Points</span>
-                          
-                          </p>
-                          <!-- Chart -->
-                          <div class="relative p-4 h-72">
-                            <canvas id="analysisCompLine"></canvas>
-                          </div>
+                        <div id="analysisTree" class="objList collapse-content h-48 overflow-y-auto flex flex -mx-3 flex-col bg-bluegray-800">
+                           <!-- !Analysis Content -->
                         </div>
-                      </div>
-                </div>
+                     </div>
+                     <div data-theme="vstheme" class="collapse w-full  bg-bluegray-900 bg-opacity-40 collapse-arrow ">
+                        <input type="checkbox" onclick="SendCommand('<object_list />');">
+                        <div class="collapse-title text-lg font-normal   filter ">
+                           Reports
+                        </div>
+                        <div id="reportsTree" class="objList collapse-content flex h-48 overflow-y-auto flex -mx-3 flex-col bg-bluegray-800">
+                           <!-- !Reports Tree Content -->
+                        </div>
+                     </div>
+                     <div data-theme="vstheme" class="collapse w-full  bg-bluegray-900 bg-opacity-40 collapse-arrow ">
+                        <input type="checkbox">
+                        <div class="collapse-title text-lg font-normal filter ">
+                           Targets
+                        </div>
+                        <div id="targetsTree" class="objList collapse-content flex -mx-3 h-48 overflow-y-auto flex flex-col bg-bluegray-800">
+                           <!-- !Target Tree Content -->
+                        </div>
+                     </div>
+                  </div>
+                  <!-- Side BarFooter -->
+                  <div class="mt-auto">
+                     <div class="bg-gray-900 bg-opacity-40 space-y-4 pt-2 border-b-0 pb-4 border border-gray-700 ">
+                        <!-- Measure Mode Header  -->
+                        <div class="flex py-0">
+                           <p class="text-2xl pl-2 font-light">Measure Mode:</p>
+                        </div>
+                        <!-- Measure Mode Container -->
+                        <div class="flex ">
+                           <select id="pointModeSelect"
+                              onchange="togglePointMode()"
+                              class="font-normal select select-sm-bordered w-auto flex-1 mx-2 rounded text-lg bg-gray-200 text-black select-sm">
+                              <option value="0">Single</option>
+                              <option value="1">Continuous</option>
+                              <option value="2">Stationary</option>
+                           </select>
+                        </div>
+                     </div>
+                     <div class="bg-gray-900 bg-opacity-40 pt-4 space-y-4 border-t-0 px-2 pb-6 border border-gray-700 ">
+                        <!-- Measure Controls         -->
+                        <div data-theme="vstheme" class="flex ">
+                           <button onclick="SendCommand('<measure_done />');" class="w-auto flex-1 mr-1 rounded btn btn-md btn-info hover:opacity-70">Done</button>
+                           <button onclick="SendCommand('<measure_undo />');" class="w-auto flex-1 ml-1 rounded btn btn-md btn-warning hover:opacity-70">Undo</button>
+                        </div>
+                        <div data-theme="vstheme" class="flex-shrink-0 ">
+                           <button onclick="SendCommand('<measure_trigger />');" class="w-full btn btn-lg rounded btn-success hover:opacity-70">Trigger</button>
+                        </div>
+                     </div>
+                  </div>
+               </nav>
             </div>
-        </div>
-    </body>
-
-<script type="text/javascript" src="node_modules/chart.js/dist/chart.js" , defer></script>
-<script type="text/javascript" src="chartsData.js"></script>
-<script src="apiCalls.js"></script>
-<script>
-    const setup = () => {
-        makeCharts()
-        const getTheme = () => {
-            return 'dark'
-        }
-        const updateBarChart = () => {
-            console.log("updating bar chart")
-            const data = {
-                data: randomData(),
-                backgroundColor: 'rgb(207, 250, 254)',
-            }
-            if (on) {
-                barChart.data.datasets.push(data)
-                barChart.update()
-            } else {
-                barChart.data.datasets.splice(1)
-                barChart.update()
-            }
-        }
-        return {
-            isRTL: false,
-            isSidebarOpen: window.innerWidth <= 1280 ? false : true,
-            watchScreen() {
-                if (window.innerWidth <= 1280) {
-                    this.isSidebarOpen = false
-                }
-                if (window.innerWidth >= 1280) {
-                    this.isSidebarOpen = true
-                }
-            },
-            isSettingsPanelOpen: false,
-            updateBarChart,
-        }
-    }
-</script>
-
-<script>
-    window['module'] = window['old_module'];
-    delete window.old_module;
-</script>
-
-<script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
-<script src="dro2.js"></script>
-<script>
-    var rtime;
-    var timeout = false;
-    var delta = 200;
-    $(window).resize(function () {
-        rtime = new Date();
-        if (timeout === false) {
-            timeout = true;
-            setTimeout(resizeend, delta);
-        }
-    });
-    async function resizeend() {
-        if (new Date() - rtime < delta) {
-            setTimeout(resizeend, delta);
-        } else {
-            timeout = false;
-            const resized = await settings.get('stats.resized');
-            await settings.set('stats.resized', resized + 1);
-        }
-    }
-</script>
-
+            <!-- Page content -->
+            <div class="flex flex-col flex-1 sm:pl-16"
+               :class="{ 'xl:pl-80': isSidebarOpen }">
+               <!-- Header  -->
+               <header
+                  class="sticky top-0 z-[5] justify-between flex items-center flex-shrink-0 h-full px-2 
+                  bg-gradient-to-l from-bluegray-700 via-bluegray-800 to-gray-800
+                  border-b border-gray-600 sm:px-4 max-h-14">
+                  <!-- Header Title -->
+                  <a href="https://verisurf.com" target="_blank" class="hidden sm:block">
+                  <span class="text-2xl pl-2 text-color-white subpixel-antialiased">Verisurf DRO</span>
+                  </a>
+                  <a href="https://github.com/verisurf/verisurf-api" target="_blank" class="inline-flex items-center justify-center bg-opacity-10 p- space-x-1 bg-bluegray-300 rounded-full shadow hover:bg-opacity-20">
+                     <span>
+                        <svg class="w-8 h-8 text-gray-300" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                           <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+                        </svg>
+                     </span>
+                     <span></span>
+                  </a>
+               </header>
+               <div class="flex flex-1 bg-gray-900">
+                  <!-- Main -->
+                  <main class="flex-1 p-12" aria-labelledby="page-title">
+                     <!-- Main Content -->
+                     <!-- WIP DRO READOUT  -->
+                     <div id="droTextContainer" class="bg-gray-800 rounded-lg shadow-2xl border-gray-700 border flex flex-col px-2">
+                        <!-- !X ROW -->
+                        <div class="flex flex-row items-center justify-between">
+                           <div class="flex">
+                              <p id="xText" class="2xl:text-15xl xl:text-11xl lg:text-9xl md:text-7xl opacity-80 "></p>
+                           </div>
+                           <div class="flex ">
+                              <p id="xTextVal" class="2xl:text-15xl xl:text-11xl lg:text-9xl md:text-7xl text-right tracking-wider font-mono opacity-90 "></p>
+                           </div>
+                        </div>
+                        <!-- !Y ROW -->
+                        <div class="flex flex-row items-center justify-between">
+                           <div class="flex">
+                              <p id="yText" class="2xl:text-15xl xl:text-11xl lg:text-9xl md:text-7xl opacity-80 "></p>
+                           </div>
+                           <div class="flex ">
+                              <p id="yTextVal" class="2xl:text-15xl xl:text-11xl lg:text-9xl md:text-7xl text-right tracking-wider font-mono opacity-90 ">
+                              </p>
+                           </div>
+                        </div>
+                        <!-- !Z ROW -->
+                        <div class="flex flex-row items-center justify-between">
+                           <div class="flex">
+                              <p id="zText" class="2xl:text-15xl xl:text-11xl lg:text-9xl md:text-7xl opacity-80 "></p>
+                           </div>
+                           <div class="flex ">
+                              <p id="zTextVal" class="2xl:text-15xl xl:text-11xl lg:text-9xl md:text-7xl opacity-90  text-right tracking-wider font-mono">
+                              </p>
+                           </div>
+                        </div>
+                        <!-- !3D ROW -->
+                        <div class="flex flex-row items-center justify-between">
+                           <div class="flex">
+                              <p id="dText" class="2xl:text-15xl xl:text-11xl lg:text-9xl md:text-7xl opacity-80  "></p>
+                           </div>
+                           <div class="flex ">
+                              <p id="dTextVal" class="2xl:text-15xl xl:text-11xl lg:text-9xl md:text-7xl opacity-90 text-right tracking-wider font-mono ">
+                              </p>
+                           </div>
+                        </div>
+                     </div>
+                     <!-- Controls Box -->
+                     <div x-show="!isSidebarOpen" class="flex mt-auto absolute bottom-10 left-24" >
+                        <ul class="flex flex-row px-8 py-3 rounded-full space-x-3 bg-bluegray-800">
+                           <li id="doneBtnsm" onclick="SendCommand('<measure_done />')" class="rounded-full bg-blue-800 bg-opacity-50 p-1 hover:bg-opacity-90 shadow-2xl">
+                              <a href="#">
+                                 <svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 0 24 24" width="36px" fill="#FFFFFF">
+                                    <path d="M0 0h24v24H0V0z" fill="none" />
+                                    <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
+                                 </svg>
+                              </a>
+                           </li>
+                           <li id="undoBtnsm" onclick="SendCommand('<measure_undo />');"class="rounded-full bg-yellow-800 bg-opacity-70 p-1 hover:bg-opacity-90 ">
+                              <a href="#">
+                                 <svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 0 24 24" width="36px" fill="#FFFFFF">
+                                    <path d="M0 0h24v24H0V0z" fill="none" />
+                                    <path
+                                       d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z" />
+                                 </svg>
+                              </a>
+                           </li>
+                           <li id="trgrBtnsm" onclick="SendCommand('<measure_trigger />');" class="rounded-full bg-green-800 bg-opacity-70 p-1 hover:bg-opacity-90 ">
+                              <a href="#">
+                                 <svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 0 24 24" width="36px" fill="#FFFFFF">
+                                    <path d="M0 0h24v24H0V0z" fill="none" />
+                                    <path d="M10 8.64L15.27 12 10 15.36V8.64M8 5v14l11-7L8 5z" />
+                                 </svg>
+                              </a>
+                           </li>
+                        </ul>
+                     </div>
+                  </main>
+               </div>
+            </div>
+         </div>
+         <div>
+            <button @click="isSettingsPanelOpen = true"
+               class="fixed right-0 px-3 py-1 shadow-2xl text-xl text-white uppercase transform rotate-90 translate-x-4 bg-gray-600 top-1/2 rounded-b-md">
+            Stats
+            </button>
+         </div>
+         <!--TODO: Settings Panel -->
+         <div x-show="isSettingsPanelOpen" @click.away="isSettingsPanelOpen = false"
+            x-transition:enter="transition transform duration-300"
+            x-transition:enter-start="translate-x-full opacity-30  ease-in"
+            x-transition:enter-end="translate-x-0 opacity-100 ease-out"
+            x-transition:leave="transition transform duration-300"
+            x-transition:leave-start="translate-x-0 opacity-100 ease-out"
+            x-transition:leave-end="translate-x-full opacity-0 ease-in"
+            class="fixed inset-y-0 right-0 z-20 flex flex-col bg-bluegray-800 shadow-dark-lg bg-opacity-95 w-2/3"
+            style="backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px)">
+            <div class="flex items-center justify-between flex-shrink-0 p-2">
+               <!-- Settings Panel Header ... -->
+               <h6 class="text-2xl pl-2 text-color-white subpixel-antialiased">Stats Panel</h6>
+               <button @click="isSettingsPanelOpen = false" class="p-2 rounded-md focus:outline-none focus:ring hover:bg-bluegray-700 hover:text-white focus:ring-offset-white hover:shadow-dark-lg">
+                  <svg class="w-6 h-6 text-gray-200" xmlns="http://www.w3.org/2000/svg" fill="none"
+                     viewBox="0 0 24 24" stroke="currentColor">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+               </button>
+            </div>
+            <div class="flex-1 max-h-full p-4 overflow-hidden hover:overflow-y-scroll space-y-6 overflow-y-auto">
+               <!-- Settings Panel Content ... -->
+               <!-- Random Stats Content ... -->
+               <div class="grid grid-cols-1 gap-8 p-4 lg:grid-cols-2 xl:grid-cols-4">
+                  <div class="stats shadow overflow-x-hidden bg-gray-800 bg-opacity-100 border border-gray-900 rounded-lg shadow-2xl">
+                     <div class="stat bg-opacity-0">
+                        <div class="stat-title">Total DRO Sessions</div>
+                        <div id="droSeshVal" class="stat-value"></div>
+                        <div class="stat-desc">this month</div>
+                     </div>
+                  </div>
+                  <div class="stats shadow overflow-x-hidden bg-gray-800 bg-opacity-100 border border-gray-900 rounded-lg shadow-2xl">
+                     <div class="stat bg-opacity-0">
+                        <div class="stat-title">Last Calibration</div>
+                        <div id="lastCalVal" class="stat-value"></div>
+                        <div class="stat-desc">I++ CMM Interface</div>
+                     </div>
+                  </div>
+                  <div class="stats shadow overflow-x-hidden bg-gray-800 bg-opacity-100 border border-gray-900 rounded-lg shadow-2xl">
+                     <div class="stat bg-opacity-0">
+                        <div class="stat-title">API Commands Sent</div>
+                        <div id="apiComCountVal" class="stat-value"></div>
+                        <div class="stat-desc">API Pro</div>
+                     </div>
+                  </div>
+                  <div class="stats shadow overflow-x-hidden bg-gray-800 bg-opacity-100 border border-gray-900 rounded-lg shadow-2xl">
+                     <div class="stat bg-opacity-0">
+                        <div class="stat-title">App Resized</div>
+                        <div id="resizedVal" class="stat-value"></div>
+                        <div class="stat-desc">You're on a roll!</div>
+                     </div>
+                  </div>
+               </div>
+               <!-- Charts -->
+               <div class="grid grid-cols-1 p-4 space-y-8 lg:gap-8 lg:space-y-0 lg:grid-cols-3">
+                  <!-- Bar chart card -->
+                  <div class="col-span-2 bg-gray-800 bg-opacity-100 border border-gray-900 rounded-lg  shadow-2xl">
+                     <!-- Card header -->
+                     <div class="flex items-center justify-between p-4 border-b dark:border-primary">
+                        <h4 class="text-lg font-semibold text-gray-300 dark:text-light">Best Analysis Summary</h4>
+                        <div class="flex items-center space-x-2">
+                           <span class="text-sm text-gray-500 dark:text-light">Results are calculated using the Avg. of each Analysis.</span>
+                        </div>
+                     </div>
+                     <!-- Chart -->
+                     <div class="relative p-4 h-72">
+                        <canvas id="hbarChart"></canvas>
+                     </div>
+                  </div>
+                  <!-- Doughnut chart card -->
+                  <div class="bg-gray-800 bg-opacity-100 border border-gray-900 rounded-lg  shadow-2xl">
+                     <!-- Card header -->
+                     <div class="flex items-center justify-between p-4 border-b dark:border-primary">
+                        <h4 class="text-lg font-semibold text-gray-300 dark:text-light">Device Usage</h4>
+                        <div class="flex items-center">
+                        </div>
+                     </div>
+                     <!-- Chart -->
+                     <div class="relative p-4 h-72">
+                        <canvas id="donutChart"></canvas>
+                     </div>
+                  </div>
+               </div>
+               <div class="grid grid-cols-1 p-4 space-y-8 lg:gap-8 lg:space-y-0 lg:grid-cols-3">
+                  <!-- Analysis Details chart -->
+                  <div class="col-span-1 bg-gray-800 bg-opacity-100 border border-gray-900 rounded-lg shadow-2xl">
+                     <!-- Card header -->       
+                     <div class="p-4 border-b ">
+                        <h4 id="anlysisDetHeader" class="text-lg font-semibold text-gray-300 ">Breakdown</h4>
+                     </div>
+                     <p class="p-4">
+                        <span class="text-2xl font-medium text-gray-600 font-mono" id="currentPoint">- / --</span>
+                        <span class="text-sm font-medium text-gray-300">Point ID</span>
+                     </p>
+                     <!-- Chart -->
+                     <div class="relative p-4 h-72">
+                        <canvas id="smBarChart"></canvas>
+                     </div>
+                  </div>
+                  <!-- Analysis Overview chart card -->
+                  <div class="col-span-2 bg-gray-800 bg-opacity-100 border border-gray-900 rounded-lg shadow-2xl">
+                     <!-- Card header -->
+                     <div class="flex items-center justify-between space-x-4 p-4 border-b ">
+                        <h4 id="analysisOverHeader" class="text-lg font-semibold text-gray-300 dark:text-light">Overview</h4>
+                        <select onchange="handleAnalysisSelectChange(this)" id="analysisSelect" class="font-normal select w-40 rounded bg-bluegray-700 text-white select-sm">
+                           <option value="0">analysis1</option>
+                           <option value="1">auto-align1</option>
+                           <option value="2">analysis2</option>
+                           <option value="3">analysis3</option>
+                        </select>
+                     </div>
+                     <p class="p-4">
+                        <span class="text-2xl font-medium text-gray-200 font-mono" id="maxpts">--</span>
+                        <span class="text-sm font-medium text-gray-300">Points</span>
+                     </p>
+                     <!-- Chart -->
+                     <div class="relative p-4 h-72">
+                        <canvas id="analysisCompLine"></canvas>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </body>
+   <script type="text/javascript" src="node_modules/chart.js/dist/chart.js" , defer></script>
+   <script type="text/javascript" src="chartsData.js"></script>
+   <script src="apiCalls.js"></script>
+   <script>
+      const setup = () => {
+          makeCharts()
+          const getTheme = () => {
+              return 'dark'
+          }
+          const updateBarChart = () => {
+              console.log("updating bar chart")
+              const data = {
+                  data: randomData(),
+                  backgroundColor: 'rgb(207, 250, 254)',
+              }
+              if (on) {
+                  barChart.data.datasets.push(data)
+                  barChart.update()
+              } else {
+                  barChart.data.datasets.splice(1)
+                  barChart.update()
+              }
+          }
+          return {
+              isRTL: false,
+              isSidebarOpen: window.innerWidth <= 1280 ? false : true,
+              watchScreen() {
+                  if (window.innerWidth <= 1280) {
+                      this.isSidebarOpen = false
+                  }
+                  if (window.innerWidth >= 1280) {
+                      this.isSidebarOpen = true
+                  }
+              },
+              isSettingsPanelOpen: false,
+              updateBarChart,
+          }
+      }
+   </script>
+   <script>
+      window['module'] = window['old_module'];
+      delete window.old_module;
+   </script>
+   <script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
+   <script src="dro2.js"></script>
+   <script>
+      var rtime;
+      var timeout = false;
+      var delta = 200;
+      $(window).resize(function () {
+          rtime = new Date();
+          if (timeout === false) {
+              timeout = true;
+              setTimeout(resizeend, delta);
+          }
+      });
+      async function resizeend() {
+          if (new Date() - rtime < delta) {
+              setTimeout(resizeend, delta);
+          } else {
+              timeout = false;
+              const resized = await settings.get('stats.resized');
+              await settings.set('stats.resized', resized + 1);
+          }
+      }
+   </script>
 </html>
