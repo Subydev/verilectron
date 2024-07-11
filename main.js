@@ -1,12 +1,12 @@
-const { app, BrowserWindow, globalShortcut } = require("electron");
+const { app, BrowserWindow } = require("electron");
 require("@electron/remote/main").initialize();
 require("update-electron-app")();
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
-// this should be placed at top of main.js to handle setup events quickly
+
 if (handleSquirrelEvent()) {
-  // squirrel event handled and app will exit in 1000ms, so don't do anything else
   return;
 }
+
 try {
   require("electron-reloader")(module);
 } catch (_) {}
@@ -25,15 +25,21 @@ function createWindow() {
   });
 
   win.loadFile("index.html");
-  //!open Dev Tools if dev mode.
-  // win.webContents.openDevTools()
+
+  // Open DevTools only in development mode
+  if (process.env.NODE_ENV === 'development') {
+    win.webContents.openDevTools();
+  }
+
   win.once("ready-to-show", () => {
     win.show();
   });
 }
+
 app.whenReady().then(() => {
   createWindow();
 });
+
 app.on("browser-window-created", (e, win) => {
   win.removeMenu();
 });
@@ -41,6 +47,7 @@ app.on("browser-window-created", (e, win) => {
 app.on("window-all-closed", function () {
   if (process.platform !== "darwin") app.quit();
 });
+
 
 function handleSquirrelEvent() {
   if (process.argv.length === 1) {

@@ -106,57 +106,109 @@ function togglePopups(e) {
 
 //*?----------Check Mastercam Running ---------->
 const bLaunchMcam = async () => {
-  regedit.list(
-    "HKLM\\SOFTWARE\\CNC Software, Inc.",
-    function (err, listResult) {
-      //?Super painful parsing this regedit lib response, so just going ham on an Array for now.
-      let listKeys = Object.values(listResult)[0];
+  console.log("bLaunchMcam function called");
+
+  const registryPaths = [
+    // "HKLM\\SOFTWARE\\CNC Software, Inc.",
+    "HKLM\\SOFTWARE\\CNC Software"
+  ];
+
+  const checkRegistryPath = (index) => {
+    if (index >= registryPaths.length) {
+      console.log("Finished checking all registry paths.");
+      return;
+    }
+
+    console.log(`Checking registry path: ${registryPaths[index]}`);
+
+    regedit.list(registryPaths[index], function (err, listResult) {
+      if (err || !listResult || !listResult[registryPaths[index]]) {
+        console.log(`Registry path not found: ${registryPaths[index]}`);
+        checkRegistryPath(index + 1);
+        return;
+      }
+
+      console.log(`Registry path found: ${registryPaths[index]}`);
+
+      let listKeys = listResult[registryPaths[index]];
       let listObject = Object.keys(listKeys).map((key, i) => [
         Number(key),
         listKeys[key],
       ]);
       let arrRes = listObject[0][1];
-      let newArr = removeKey(arrRes);
-      function removeKey(arr) {
-        arr.forEach((element, idx) => {
-          if (element.length !== 14) {
-            delete arrRes[idx];
-          }
-        });
-        return Object.fromEntries(
-          Object.entries(arr).filter(([_, v]) => v != null)
-        );
-      }
 
-      let textToInsert = "";
-      $.each(newArr, function (count, item) {
-        regedit.list(
-          ["HKLM\\SOFTWARE\\CNC Software, Inc.\\" + item + ""],
-          function (err, itemResult) {
-            if (typeof Object.values(itemResult)[0].values === "undefined") {
+      if (Array.isArray(arrRes)) {
+        let newArr = removeKey(arrRes);
+        console.log("Filtered array:", newArr);
+
+        let textToInsert = "";
+        $.each(newArr, function (count, item) {
+          const itemRegistryPaths = [
+            `HKLM\\SOFTWARE\\CNC Software, Inc.\\${item}`,
+            `HKLM\\SOFTWARE\\CNC Software\\${item}`
+          ];
+
+          const checkItemRegistryPath = (itemIndex) => {
+            if (itemIndex >= itemRegistryPaths.length) {
+              console.log(`Finished checking item registry paths for: ${item}`);
               return;
             }
-            itemDirVal = Object.values(itemResult)[0].values.Directory.value;
-            filePath = itemDirVal + `Mastercam.exe`;
-            setMCamSettings(count, filePath, item)
-              .then((result) => {})
-              .catch((error) => {
-                log.warn(error);
-              });
-          }
-        );
-        //?Map an OnClick to send the version selected to childexec.
-        text = `<a onClick="OpenVerisurf(this)" id="${item}"class = "dropdown-item" href="#">${item.replace(
-          "Mastercam",
-          "Verisurf"
-        )}</a>`;
-        textToInsert += text;
-      });
-      $("#versionSelector").append(textToInsert);
-    }
-  );
-};
 
+            console.log(`Checking item registry path: ${itemRegistryPaths[itemIndex]}`);
+
+            regedit.list([itemRegistryPaths[itemIndex]], function (err, itemResult) {
+              if (err || !itemResult || typeof itemResult[itemRegistryPaths[itemIndex]]?.values?.Directory?.value === "undefined") {
+                console.log(`Item registry path not found or missing Directory value: ${itemRegistryPaths[itemIndex]}`);
+                checkItemRegistryPath(itemIndex + 1);
+                return;
+              }
+
+              console.log(`Item registry path found: ${itemRegistryPaths[itemIndex]}`);
+
+              const itemDirVal = itemResult[itemRegistryPaths[itemIndex]].values.Directory.value;
+              const filePath = itemDirVal + `Mastercam.exe`;
+              setMCamSettings(count, filePath, item)
+                .then((result) => {
+                  console.log(`Settings set for item: ${item}`);
+                })
+                .catch((error) => {
+                  console.error(`Error setting settings for item: ${item}`, error);
+                  log.warn(error);
+                });
+
+              const text = `<a onClick="OpenVerisurf(this)" id="${item}" class="dropdown-item" href="#">${item.replace(
+                "Mastercam",
+                "Verisurf"
+              )}</a>`;
+              textToInsert += text;
+
+              if (itemIndex === itemRegistryPaths.length - 1) {
+                console.log("Appending text to dropdown menu:", textToInsert);
+                $("#versionSelector").append(textToInsert);
+              }
+            });
+          };
+
+          checkItemRegistryPath(0);
+        });
+      } else {
+        console.log("arrRes is not an array:", arrRes);
+        // Handle the case when arrRes is not an array
+      }
+    });
+  };
+
+  function removeKey(arr) {
+    arr.forEach((element, idx) => {
+      if (element.length !== 14) {
+        delete arr[idx];
+      }
+    });
+    return arr.filter((v) => v != null);
+  }
+
+  checkRegistryPath(0);
+};
 //?Asyncs to handle the user storage settings
 async function hasSettings(setting = "") {
   return await settings.has(setting);
@@ -254,6 +306,88 @@ function RunTutorial() {
     })
     .start();
 }
+
+// Existing code...
+
+function quickSearch() {
+  let input = document.getElementById("quickSearch").value;
+  input = input.toLowerCase();
+  let x = VSApiFuncs;
+
+  $(".quickSearchListResults").empty();
+
+  for (i = 0; i < x.length; i++) {
+    if (x[i].name.toLowerCase().includes(input)) {
+      let text = `<li><a onClick="quickSearchItemSend('${x[i].val}')" class="dropdown-item w-full flex flex-row" id="quick-${x.indexOf(x[i])}" href="#">${x[i].name}</a></li>`;
+      $(".quickSearchListResults").append(text);
+    }
+  }
+
+  if (input.length == 0 || input == undefined) {
+    $(".quickSearchListResults").empty();
+  }
+}
+
+function quickSearchItemSend(val) {
+  document.getElementById("quickSearch").value = val;
+  $(".quickSearchListResults").empty();
+  
+  // Find the command in VSApiFuncs
+  let selectedCommand = VSApiFuncs.find(cmd => cmd.val === val);
+  
+  if (selectedCommand) {
+    // Populate the category dropdown
+    let categorySelect = document.getElementById("categorySelect");
+    let categoryFound = false;
+    for (let i = 0; i < categorySelect.options.length; i++) {
+      if (categorySelect.options[i].value === selectedCommand.category) {
+        categorySelect.selectedIndex = i;
+        categoryFound = true;
+        break;
+      }
+    }
+    
+    // If category not found, select "All" or add the category
+    if (!categoryFound) {
+      let allOptionIndex = Array.from(categorySelect.options).findIndex(option => option.value === "All");
+      if (allOptionIndex !== -1) {
+        categorySelect.selectedIndex = allOptionIndex;
+      } else {
+        let newOption = new Option(selectedCommand.category, selectedCommand.category);
+        categorySelect.add(newOption);
+        categorySelect.selectedIndex = categorySelect.options.length - 1;
+      }
+    }
+    
+    // Trigger the showCommands function to update the command dropdown
+    showCommands();
+    
+    // Select the command in the dropdown
+    let commandSelect = document.getElementById("command");
+    let commandFound = false;
+    for (let i = 0; i < commandSelect.options.length; i++) {
+      if (commandSelect.options[i].value === val) {
+        commandSelect.selectedIndex = i;
+        commandFound = true;
+        break;
+      }
+    }
+    
+    // If command not found in dropdown, add it
+    if (!commandFound) {
+      let newOption = new Option(selectedCommand.name, selectedCommand.val);
+      commandSelect.add(newOption);
+      commandSelect.selectedIndex = commandSelect.options.length - 1;
+    }
+    
+    // Trigger the handleCmdChange function to update any other UI elements
+    handleCmdChange(val);
+  }
+}
+// Add this to your existing window.onload or document.addEventListener("DOMContentLoaded", ...) function
+document.getElementById("quickSearch").addEventListener("input", quickSearch);
+
+// Existing code...
 function sClosed() {
   $("#cmdTab").removeClass("ring ring-cyan-700 animate-pulse");
   $(".searchlistresults").empty();
@@ -530,7 +664,34 @@ function OpenDRO() {
     },
   });
 
-  win.loadURL(`file://${__dirname}/dro2.html`);
+  win.loadURL(`file://${__dirname}//dro2.html`);
+  // win.webContents.openDevTools()
+  win.onbeforeunload = (e) => {
+    Disconnect();
+//!Disconnect before it is closed
+    // Unlike usual browsers that a message box will be prompted to users, returning
+    // a non-void value will silently cancel the close.
+    // It is recommended to use the dialog API to let the user confirm closing the
+    // application.
+    e.returnValue = false; // equivalent to `return false` but not recommended
+  };
+}
+
+function OpenScriptBuilder() {
+  const { BrowserWindow } = require("@electron/remote");
+
+  const win = new BrowserWindow({
+    width: 1460,
+    height: 1050,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+      enableRemoteModule: true,
+      nodeIntegrationInWorker: true,
+    },
+  });
+
+  win.loadURL(`file://${__dirname}//script_builder_screen//scriptBuidler.html`);
   // win.webContents.openDevTools()
   win.onbeforeunload = (e) => {
     Disconnect();

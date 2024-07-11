@@ -125,6 +125,15 @@
                   </a>
                </li>
                <li>
+                  <a href="#" onclick="OpenScriptBuilder();" :class="{'justify-center': !isSidebarOpen}"
+                     class=" droTour no-underline flex items-center p-2 text-lg space-x-2 text-white rounded-md hover:bg-gray-700 hover:text-white">
+                  <span class="">
+                  <img class="m-auto" src="./extraResources/openterminal.svg" aria-hidden="true" />
+                  </span>
+                  <span :class="{ 'lg:hidden': !isSidebarOpen }"> Script Buidler</span>
+                  </a>
+               </li>
+               <li>
                   <a href="#" onclick="RunTutorial();" :class="{'justify-center': !isSidebarOpen}"
                      class=" no-underline flex items-center p-2 text-lg space-x-2 text-white rounded-md hover:bg-gray-700 hover:text-white">
                   <span class="">
@@ -223,6 +232,15 @@
                         </div>
                      </div>
                   </div>
+                  <div class="">
+                     <label class="categoryStyle" for="quickSearch">Quick Search:</label>
+                     <div class="">
+                       <input type="text" id="quickSearch" class="form-control" placeholder="Search commands...">
+                     </div>
+                     <div id="quickSearchResults" class="quickSearchResults">
+                       <ul class="quickSearchListResults"></ul>
+                     </div>
+                   </div>
                   <div id="commandContainer"
                      class=" grid grid-cols-1 space-y-4 items-center lg:space-y-3  lg:grid-cols-7 xl:gap-x-4">
                      <label class=" col-span-full" for="inputCmd">Command:</label>
@@ -347,12 +365,12 @@
          <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                <div class="modal-header">
-                  <h5 class="modal-title">Verisurf Not Running</h5>
+                  <h5 class="modal-title text-gray-800">Verisurf Not Running</h5>
                </div>
                <div class="modal-body">
                   <form>
                      <div class="form-group">
-                        <label for="message-text" class="col-form-label">Verisurf doesn't seem to be
+                        <label for="message-text" class="col-form-label text-gray-800">Verisurf doesn't seem to be
                         running,
                         would you like to open it?</label>
                      </div>
